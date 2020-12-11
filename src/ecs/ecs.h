@@ -77,15 +77,27 @@ public:
 		return m_systemManager->RegisterSystem<T>();
 	}
 
-	template <typename S, typename Comp, typename ...otherComps>
+	template <typename None = void, typename S, typename Comp, typename ...otherComps>
 	void SetSystemSignature()
 	{
 		Signature signature;
 		signature.set(GetCompType<Comp>());
-		SetSystemSignature_impl<S, otherComps ...>(signature);
+		SetSystemSignature_impl<None, S, otherComps ...>(signature);
+	}
+	template <typename S, typename Comp>
+	void SetSystemSignature()
+	{
+		Signature signature;
+		signature.set(GetCompType<Comp>());
+		m_systemManager->SetSignature<S>(signature);
 	}
 
-
+	template <typename Comp>
+	bool CheckEntityType(eID entity)
+	{
+		Signature signature = m_entityManager->GetSignature(entity);
+		return signature.test(GetCompType<Comp>());
+	}
 
 private:
 
@@ -109,3 +121,4 @@ private:
 	std::unique_ptr<CompManager> m_compManager;
 	std::unique_ptr<EntityManager> m_entityManager;
 };
+

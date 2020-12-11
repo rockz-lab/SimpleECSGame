@@ -23,7 +23,7 @@ struct Gravity
 	float g = 9.81f;
 };
 
-struct DrawableCircle
+struct Circle
 {
 	float radius;
 };
@@ -38,7 +38,13 @@ struct TestBuffer
 
 struct Color
 {
-	uint32_t r;
-	uint32_t g;
-	uint32_t b;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+};
+
+struct Line
+{
+	glm::vec2 p1;
+	glm::vec2 p2;
 };

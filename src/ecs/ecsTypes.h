@@ -4,9 +4,9 @@
 #include <bitset>
 
 
-using eID = std::uint32_t;
+using eID = std::uint16_t;
 using CompType = std::uint16_t;
-const CompType maxCompType = 100;
+const CompType maxCompType = 50;
 using Signature = std::bitset<maxCompType>;
 
-const eID maxEntities = 10000;
+const eID maxEntities = 1000;
