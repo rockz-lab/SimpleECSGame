@@ -22,6 +22,14 @@ public:
 	{
 		return m_entityManager->CreateEntity();
 	}
+
+    void DestroyEntity(eID entity)
+    {
+        m_entityManager->DestroyEntity(entity);
+
+        m_compManager->OnEntityDestroyed(entity);
+        m_systemManager->OnEntityDestroyed(entity);
+    }
 	// Component Methods
 
 	template <typename C>
@@ -46,12 +54,12 @@ public:
 	template <typename C>
 	void RemoveComponent(eID entity)
 	{
-		m_compManager->RemoveComponent(entity);
+        m_compManager->RemoveComponent<C>(entity);
 
 		// signature changes!!
 		auto newSignature = m_entityManager->GetSignature(entity);
 		newSignature.set(m_compManager->GetCompType<C>(), false	);
-		m_entityManager->SetSignature(newSignature);	
+        m_entityManager->SetSignature(entity, newSignature);
 
 		m_systemManager->OnEntitySignatureChanged(entity, newSignature);
 	}

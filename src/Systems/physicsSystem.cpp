@@ -25,8 +25,8 @@ void PhysicsSystem::CollideCirles(eID source, eID target)
 		glm::vec2 t = {n.y, -n.x};
 
 		// static resolution
-		center_s += 0.5f * penetration * n;
-		center_t -= 0.5f * penetration * n;
+        center_s += 0.5f * glm::sqrt(penetration) * n;
+        center_t -= 0.5f * glm::sqrt(penetration) * n;
 
 		// Dynamic response. Here only the velocities change
 

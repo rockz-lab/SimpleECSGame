@@ -38,7 +38,7 @@ public:
 		m_signatures.insert({ strID, signature });
 	}
 
-	void EntityDestroyed(eID entity)
+    void OnEntityDestroyed(eID entity)
 	{
 		for (auto const& sys : m_systems)
 		{

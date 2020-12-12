@@ -6,17 +6,18 @@ namespace sec
 	// circle - cirlce
 
 	template <typename T>
-	bool circle_circle(const T& r1, const T& r2, const glm::vec2& center1, const glm::vec2& center2, T* penetration = 0)
+    bool circle_circle(const T& r1, const T& r2, const glm::vec2& center1, const glm::vec2& center2, T* penet_squared = 0)
 	{
 		// optional parameter penetration, passed as a ptr reference
 
-		float penetration_value = r1 + r2 - glm::distance(center1, center2);
+        glm::vec2 dir = center1 - center2;
+        float penetration_value = (r1 + r2) * (r1 + r2) - (dir.x*dir.x + dir.y*dir.y);
 
-		if (penetration != nullptr)
+        if (penet_squared != nullptr)
 
-			*penetration = penetration_value;
+            *penet_squared = penetration_value;
 
-		if (*penetration >= 0)
+        if (*penet_squared >= 0)
 			return true;
 
 		return false;

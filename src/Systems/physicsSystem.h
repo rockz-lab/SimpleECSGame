@@ -15,13 +15,13 @@ public:
 	{
 		// test collisions
 
-		for (auto const& source_entity : m_entities)
-			for (auto const& target_entity : m_entities)
+        for (eID e_source = 0; e_source < m_entities.size(); e_source++)
+            for (eID e_target = e_source+1; e_target < m_entities.size(); e_target++)
 			{
 				
-				if (target_entity != source_entity)
+                if (e_target != e_source)
 				{
-					CollideCirles(source_entity, target_entity);
+                    CollideCirles(e_source, e_target);
 				}
 			}
 		for (auto const& entity : m_entities)
@@ -41,7 +41,7 @@ public:
 		}
 	}
 private:
-	void CollideCirles(eID source, eID target);
+    void CollideCirles(eID source, eID target);
 };
 
 class CollisionSystem : public System
@@ -82,7 +82,7 @@ public:
 								circle_mov.vel = -2.0f * projAlongNormal + circle_mov.vel;
 
 								// move circle away from the line proportional to the amount of penetration
-								circle_pos += penetration * glm::normalize(circle_pos - linePoint);
+                                circle_pos += glm::sqrt(penetration) * glm::normalize(circle_pos - linePoint);
 
 							}
 

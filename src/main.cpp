@@ -54,7 +54,7 @@ int main()
     Line testLine{glm::vec2(20, 20), glm::vec2(120, 20)};
     
     // add randomly colored and distributed circles
-    const int numCircles = 300;
+    const int numCircles = 200;
 
     //std::random_device rd;
     std::mt19937 gen(12);
@@ -62,7 +62,7 @@ int main()
     std::uniform_int_distribution<> randColor(0, 255);
     std::uniform_real_distribution<float> initPos(-250, 250);
     std::normal_distribution<float> initVel(0, 100);
-    std::uniform_real_distribution<float> circleRadius(3, 10);
+    std::uniform_real_distribution<float> circleRadius(1, 10);
 
     std::vector<eID> allEntities;
     for (int i = 0; i < numCircles; i++)
@@ -117,7 +117,7 @@ int main()
     auto t0 = system_clock::now();
     while (window->isOpen())
     {
-        window->clear(sf::Color(0, 0, 0));
+        window->clear(sf::Color(0., 0, 0));
 
         sf::Event event;
         while (window->pollEvent(event))
@@ -129,11 +129,18 @@ int main()
             {
                 window->close(); 
             }
+
+            if (event.key.code == sf::Keyboard::BackSpace)
+            {
+                manager.DestroyEntity(allEntities.back());
+                allEntities.pop_back();
+            }
         }
 
         auto t1 = system_clock::now(); 
         double dT = static_cast<double>(duration_cast<microseconds>(t1 - t0).count()) * 1e-6;
         t0 = t1;
+
 
         collisionsystem->Update(dT);
         physicssystem->Update(dT);

@@ -11,7 +11,7 @@ class IComponentArray
 {
 public:
 	virtual ~IComponentArray() = default;
-	virtual void EntityDestroyed(eID entity) = 0;
+    virtual void OnEntityDestroyed(eID entity) = 0;
 };
 
 template <typename T>
@@ -68,7 +68,7 @@ public:
 		return m_components[index];
 	}
 
-	virtual void EntityDestroyed(eID entity) override final
+    virtual void OnEntityDestroyed(eID entity) override final
 	{
 		// remove the component of the destroyed id, if existing
 		if (m_entityToIndex.find(entity) != m_entityToIndex.end())
@@ -103,8 +103,6 @@ public:
 		m_nextCompType++;
 	}
 
-
-
 	template <typename T>
 	CompType GetCompType()
 	{
@@ -133,6 +131,13 @@ public:
 		getCompArray<T>()->Remove(entity);
 	}
 
+    void OnEntityDestroyed(eID entity)
+    {
+        for (auto const& pair : m_compArrays)
+        {
+            pair.second->OnEntityDestroyed(entity);
+        }
+    }
 private:
 	CompType m_nextCompType = 0;
 	std::unordered_map<const char*, CompType> m_compTypes{};
