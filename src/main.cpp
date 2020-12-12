@@ -54,7 +54,7 @@ int main()
     Line testLine{glm::vec2(20, 20), glm::vec2(120, 20)};
     
     // add randomly colored and distributed circles
-    const int numCircles = 200;
+    const int numCircles = 800;
 
     //std::random_device rd;
     std::mt19937 gen(12);
@@ -109,7 +109,7 @@ int main()
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
 
-    auto window = std::make_shared<sf::RenderWindow>(sf::VideoMode(screenWidth, screenHeight), "CausalGame", sf::Style::Fullscreen, settings);
+    auto window = std::make_shared<sf::RenderWindow>(sf::VideoMode((unsigned int)screenWidth, (unsigned int)screenHeight), "CausalGame", sf::Style::Fullscreen, settings);
     window->setVerticalSyncEnabled(true);
 
     rendersystem->Init(window);
@@ -117,7 +117,7 @@ int main()
     auto t0 = system_clock::now();
     while (window->isOpen())
     {
-        window->clear(sf::Color(0., 0, 0));
+        window->clear(sf::Color(0, 0, 0));
 
         sf::Event event;
         while (window->pollEvent(event))

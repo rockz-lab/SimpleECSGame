@@ -5,9 +5,9 @@
 void PhysicsSystem::CollideCirles(eID source, eID target)
 {
 	auto& tform1 = manager.GetComponent<Transform2D>(source);
-	auto& tform2 = manager.GetComponent<Transform2D>(target);
-
 	auto& circle1 = manager.GetComponent<Circle>(source);
+
+	auto& tform2 = manager.GetComponent<Transform2D>(target);
 	auto& circle2 = manager.GetComponent<Circle>(target);
 
 	auto& r_s = circle1.radius;

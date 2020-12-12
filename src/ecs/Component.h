@@ -21,10 +21,11 @@ public:
 
 	void Insert(eID entity, T compData)
 	{
-		assert(m_entityToIndex.find(entity) == m_entityToIndex.end() && "Failed to add Component. There can only be one component of each type!");
+		assert(m_entityToIndex[entity] == InvalidIndex && "Failed to add Component. There can only be one component of each type!");
 
 		// Insert at the end
 		m_entityToIndex[entity] = m_size;
+
 		m_indexToEntity[m_size] = entity;
 
 		m_components[m_size] = compData;
@@ -35,7 +36,7 @@ public:
 
 	void Remove(eID entity)
 	{
-		assert(m_entityToIndex.find(entity) != m_entityToIndex.end() && "Component to remove does not exist.");
+		assert(m_entityToIndex[entity] != InvalidIndex && "Component to remove does not exist.");
 
 		// Remove from array index.
 
@@ -52,8 +53,8 @@ public:
 		m_indexToEntity[removedEntityIndex] = lastIndexEntity;
 		m_entityToIndex[lastIndexEntity] = removedEntityIndex;
 
-		m_entityToIndex.erase(entity);
-		m_indexToEntity.erase(lastIndex);
+		m_entityToIndex[entity] = InvalidIndex;
+		m_indexToEntity[lastIndex] = InvalidIndex;
 
 		m_size--;
 	}
@@ -61,9 +62,9 @@ public:
 
 	T& GetCompData(eID entity)
 	{
-		assert(m_entityToIndex.find(entity) != m_entityToIndex.end() && "Component to retrieve data from does not exist.");
+		assert(m_entityToIndex[entity] != InvalidIndex && "Component to retrieve data from does not exist.");
 
-		// Look up through map
+		// Look up through array
 		auto index = m_entityToIndex[entity];
 		return m_components[index];
 	}
@@ -71,15 +72,16 @@ public:
     virtual void OnEntityDestroyed(eID entity) override final
 	{
 		// remove the component of the destroyed id, if existing
-		if (m_entityToIndex.find(entity) != m_entityToIndex.end())
+		if (m_entityToIndex[entity] == InvalidIndex)
 			Remove(entity);
 	}
 
 private:
 	// Array for all the components of an Enitity Type T. Size is bounded by the max number of Entities (an Entity can only have once instance of each component)
 	std::array<T, maxEntities> m_components{};
-	std::unordered_map<eID, eID> m_entityToIndex{};
-	std::unordered_map<eID, eID> m_indexToEntity{};
+
+	std::array<eID, maxEntities> m_entityToIndex{};
+	std::array<eID, maxEntities> m_indexToEntity{};
 
 	eID m_size = 0;
 }; 
