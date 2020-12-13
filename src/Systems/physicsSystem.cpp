@@ -10,8 +10,8 @@ void PhysicsSystem::CollideCirles(eID source, eID target)
 	auto& tform2 = manager.GetComponent<Transform2D>(target);
 	auto& circle2 = manager.GetComponent<Circle>(target);
 
-	auto& r_s = circle1.radius;
-	auto& r_t = circle2.radius;
+	auto const& r_s = circle1.radius;
+	auto const& r_t = circle2.radius;
 
 	glm::vec2& center_s = tform1.pos;
 	glm::vec2& center_t = tform2.pos;
@@ -40,11 +40,14 @@ void PhysicsSystem::CollideCirles(eID source, eID target)
 		float vel_n_t = glm::dot(n, vel_t);
 		float vel_t_t = glm::dot(t, vel_t);
 
-		float vel_n_s_update = 2 * (r_s * vel_n_s + r_t * vel_n_t) / (r_s + r_t) - vel_n_s;
-		float vel_t_s_update = 2 * (r_s * vel_t_s + r_t * vel_t_t) / (r_s + r_t) - vel_t_s;
-		
-		float vel_n_t_update = 2 * (r_s * vel_n_s + r_t * vel_n_t) / (r_s + r_t) - vel_n_t;
-		float vel_t_t_update = 2 * (r_s * vel_t_s + r_t * vel_t_t) / (r_s + r_t) - vel_t_t;
+		// masses 
+		float m_s = r_s * r_s * r_s;
+		float m_t = r_t * r_t * r_t;
+		float vel_n_s_update = 2 * (m_s * vel_n_s + m_t * vel_n_t) / (m_s + m_t) - vel_n_s;
+		float vel_t_s_update = 2 * (m_s * vel_t_s + m_t * vel_t_t) / (m_s + m_t) - vel_t_s;
+									
+		float vel_n_t_update = 2 * (m_s * vel_n_s + m_t * vel_n_t) / (m_s + m_t) - vel_n_t;
+		float vel_t_t_update = 2 * (m_s * vel_t_s + m_t * vel_t_t) / (m_s + m_t) - vel_t_t;
 
 		vel_s = vel_t_s_update * t + vel_n_s_update * n;
 		vel_t = vel_t_t_update * t + vel_n_t_update * n;

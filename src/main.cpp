@@ -2,6 +2,8 @@
 
 #include "ecs/ecs.h"
 ECSManager manager; // needs to be defined
+// initialize the counter
+CompType BaseComponent::m_counter = 0;
 
 #include "Components/gameComponents.h"
 #include "Systems/physicsSystem.h"
@@ -49,12 +51,15 @@ int main()
     const float screenWidth = 1920;
     const float screenHeight = 1080;
 
-    Gravity grav({ 9.81f*10 });
-    Circle circle{ 10.0 };
-    Line testLine{glm::vec2(20, 20), glm::vec2(120, 20)};
-    
+    Gravity grav;
+    grav.g = 9.81f;
+
+    Circle circle;
+    //Line testLine{glm::vec2(20, 20), glm::vec2(120, 20)};
+
+
     // add randomly colored and distributed circles
-    const int numCircles = 800;
+    const int numCircles = 90;
 
     //std::random_device rd;
     std::mt19937 gen(12);
@@ -62,26 +67,29 @@ int main()
     std::uniform_int_distribution<> randColor(0, 255);
     std::uniform_real_distribution<float> initPos(-250, 250);
     std::normal_distribution<float> initVel(0, 100);
-    std::uniform_real_distribution<float> circleRadius(1, 10);
+    std::uniform_real_distribution<float> circleRadius(3, 30);
 
     std::vector<eID> allEntities;
     for (int i = 0; i < numCircles; i++)
     {
         auto newEntity = manager.CreateEntity();
+        Color newColor;
+        MovementState initMov;
+        Transform2D initTForm;
+        initTForm.pos = glm::vec2{ initPos(gen) + screenWidth / 2, initPos(gen) + screenHeight / 2 };
 
         circle.radius = circleRadius(gen);
         manager.AddComponent<Circle>(newEntity, circle);
-        manager.AddComponent<Color>(newEntity, Color { uint8_t(randColor(gen)), uint8_t(randColor(gen)) , uint8_t(randColor(gen)) });
+
+        newColor.r = uint8_t(randColor(gen));
+        newColor.g = uint8_t(randColor(gen));
+        newColor.b = uint8_t(randColor(gen));
+        manager.AddComponent<Color>(newEntity, newColor);
         manager.AddComponent<Gravity>(newEntity, grav);
-        manager.AddComponent<MovementState>(newEntity, MovementState
-            {
-                glm::vec2{initVel(gen), initVel(gen)},
-                {},
-            });
-        manager.AddComponent<Transform2D>(newEntity, Transform2D
-            {
-                glm::vec2{initPos(gen) + screenWidth/2, initPos(gen) + screenHeight/2} , {}
-            });
+        initMov.vel = glm::vec2{ initVel(gen), initVel(gen) };
+
+        manager.AddComponent<MovementState>(newEntity, initMov);
+        manager.AddComponent<Transform2D>(newEntity, initTForm);
 
         allEntities.push_back(newEntity);
     }
@@ -92,16 +100,30 @@ int main()
     eID leftLine = manager.CreateEntity();
     eID rightLine = manager.CreateEntity();
 
+    Transform2D defaultTform;
+    defaultTform.pos = {}; defaultTform.R = {};
+    manager.AddComponent<Transform2D>(bottomLine, defaultTform);
+    manager.AddComponent<Transform2D>(topLine, defaultTform);
+    manager.AddComponent<Transform2D>(leftLine, defaultTform);
+    manager.AddComponent<Transform2D>(rightLine, defaultTform);
 
-    manager.AddComponent<Transform2D>(bottomLine, { {}, {} });
-    manager.AddComponent<Transform2D>(topLine, { {}, {} });
-    manager.AddComponent<Transform2D>(leftLine, { {}, {} });
-    manager.AddComponent<Transform2D>(rightLine, { {}, {} });
+    Line topLineComp, botLineComp, leftLineComp, rightLineComp;
+    botLineComp.p1 = { 0.0f, screenHeight };
+    botLineComp.p2 = {screenWidth, screenHeight};
 
-    manager.AddComponent<Line>(bottomLine,      Line{ glm::vec2{0.0f, screenHeight}, glm::vec2{screenWidth, screenHeight} });
-    manager.AddComponent<Line>(topLine,         Line{ glm::vec2{0.0f, 0.0f}, glm::vec2{screenWidth, 0.0f} });
-    manager.AddComponent<Line>(leftLine,        Line{ glm::vec2{0.0f, 0.0f}, glm::vec2{0.0f, screenHeight} });
-    manager.AddComponent<Line>(rightLine,       Line{ glm::vec2{screenWidth, 0.0f}, glm::vec2{screenWidth, screenHeight} });
+    topLineComp.p1 = { 0.0f, 0.0f };
+    topLineComp.p2 = { screenWidth, 0.0f };
+
+    leftLineComp.p1 = { 0.0f, 0.0f };
+    leftLineComp.p2 = { 0.0f, screenHeight };
+
+    rightLineComp.p1 = { screenWidth, 0.0f };
+    rightLineComp.p2 = { screenWidth, screenHeight };
+
+    manager.AddComponent<Line>(bottomLine, botLineComp);
+    manager.AddComponent<Line>(topLine, topLineComp);
+    manager.AddComponent<Line>(leftLine, rightLineComp);
+    manager.AddComponent<Line>(rightLine, leftLineComp);
 
     using namespace std::chrono;
     using namespace std::chrono_literals;
@@ -134,6 +156,33 @@ int main()
             {
                 manager.DestroyEntity(allEntities.back());
                 allEntities.pop_back();
+                break;
+            }
+
+            if (event.key.code == sf::Keyboard::Space)
+            {
+                // add a New Circle
+                auto newEntity = manager.CreateEntity();
+                Circle newCircle;
+                Transform2D newTForm;
+                Color newColor;
+                MovementState newMov;
+
+                newCircle.radius = 10;
+                newColor.r = randColor(gen);
+                newColor.g = randColor(gen);
+                newColor.b = randColor(gen);
+                newTForm.pos = { screenWidth / 2, screenHeight / 2 };
+                newMov.vel = {};
+
+                manager.AddComponent(newEntity, newCircle);
+                manager.AddComponent(newEntity, newColor);
+                manager.AddComponent(newEntity, newTForm);
+                manager.AddComponent(newEntity, grav);
+                manager.AddComponent(newEntity, newMov);
+
+                allEntities.push_back(newEntity);
+                break;
             }
         }
 

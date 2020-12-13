@@ -9,6 +9,6 @@ using CompType = std::uint16_t;
 const CompType maxCompType = 50;
 using Signature = std::bitset<maxCompType>;
 
-const eID maxEntities = 1000;
+const eID maxEntities = 5000;
 
 const eID InvalidIndex = -1;

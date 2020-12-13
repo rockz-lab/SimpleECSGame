@@ -6,6 +6,32 @@
 #include <memory>
 #include <typeinfo>
 
+
+// Components derive from this class
+class BaseComponent
+{
+public:
+	
+protected:
+	static CompType nextID()
+	{
+		return m_counter++;
+	};
+	static CompType m_counter;
+};
+
+
+
+template <typename T>
+struct Component : public BaseComponent
+{
+	static const CompType ID;
+};
+
+// ID definition -> auto increment, so that each Component Type has it's unique ID
+template <typename T>
+const CompType Component<T>::ID = BaseComponent::nextID();
+
 // virtual base class required the acess the EntityDestroyed method
 class IComponentArray
 {
@@ -18,7 +44,11 @@ template <typename T>
 class ComponentArray : public IComponentArray
 {
 public:
-
+	ComponentArray()
+	{
+		m_entityToIndex.fill(InvalidIndex);
+		m_indexToEntity.fill(InvalidIndex);
+	}
 	void Insert(eID entity, T compData)
 	{
 		assert(m_entityToIndex[entity] == InvalidIndex && "Failed to add Component. There can only be one component of each type!");
@@ -40,21 +70,24 @@ public:
 
 		// Remove from array index.
 
-		auto removedEntityIndex = m_entityToIndex[entity];
+		auto arrIndex = m_entityToIndex[entity];
 		auto lastIndex = m_size - 1;
 		// copy last Index
 		T copiedComp = m_components[lastIndex];
 
 		// Move the element at the end into the free array index
-		m_components[removedEntityIndex] = copiedComp;
+		m_components[arrIndex] = copiedComp;
+		//m_components[lastIndex] = InvalidIndex;
 
 		// Update the maps
-		eID lastIndexEntity = m_indexToEntity[lastIndex];
-		m_indexToEntity[removedEntityIndex] = lastIndexEntity;
-		m_entityToIndex[lastIndexEntity] = removedEntityIndex;
+		//eID lastIndexEntity = m_indexToEntity[lastIndex];
+		m_entityToIndex[m_indexToEntity[lastIndex]] = arrIndex;
+		m_entityToIndex[arrIndex] = InvalidIndex;
 
-		m_entityToIndex[entity] = InvalidIndex;
+
+		m_indexToEntity[arrIndex] = m_indexToEntity[lastIndex];
 		m_indexToEntity[lastIndex] = InvalidIndex;
+
 
 		m_size--;
 	}
@@ -72,12 +105,12 @@ public:
     virtual void OnEntityDestroyed(eID entity) override final
 	{
 		// remove the component of the destroyed id, if existing
-		if (m_entityToIndex[entity] == InvalidIndex)
+		if (m_entityToIndex[entity] != InvalidIndex)
 			Remove(entity);
 	}
 
 private:
-	// Array for all the components of an Enitity Type T. Size is bounded by the max number of Entities (an Entity can only have once instance of each component)
+	// Array for all the components of an Component Type T. Size is bounded by the max number of Entities (an Entity can only have once instance of each component)
 	std::array<T, maxEntities> m_components{};
 
 	std::array<eID, maxEntities> m_entityToIndex{};
@@ -91,28 +124,29 @@ private:
 class CompManager
 {
 public:
+
+	
+	// probably not even needed anymore
+
 	template <typename T>
 	void RegisterComponent()
 	{
-		const char* strID = typeid(T).name();
+		// TODO: assert stuff
 
-		assert(m_compTypes.find(strID) == m_compTypes.end() && "Component has already been registered");
+		//m_compTypes.push_back()
 
-		m_compTypes.insert({ strID, m_nextCompType });
-		m_compArrays.insert({ strID, std::make_shared<ComponentArray<T>>() });
-
-
-		m_nextCompType++;
+		m_compArrays[T::ID] = std::make_shared<ComponentArray<T>>();
+		m_numCompArrays++;
 	}
 
 	template <typename T>
 	CompType GetCompType()
 	{
-		const char* strID = typeid(T).name();
+		//const char* strID = typeid(T).name();
 
-		assert(m_compTypes.find(strID) != m_compTypes.end() && "Component does not exist!");
+		//assert(m_compTypes.find(strID) != m_compTypes.end() && "Component does not exist!");
 
-		return m_compTypes[strID];
+		return T::ID;
 	}
 
 	template <typename T>
@@ -124,7 +158,7 @@ public:
 	template <typename T>
 	void AddComponent(eID entity, T component)
 	{
-		getCompArray<T>()->Insert(entity, component);
+		getCompArray<T>()->Insert(entity, component);	
 	}
 	
 	template <typename T>
@@ -135,23 +169,25 @@ public:
 
     void OnEntityDestroyed(eID entity)
     {
-        for (auto const& pair : m_compArrays)
+        for (CompType cmp = 0; cmp < m_numCompArrays; cmp++)
         {
-            pair.second->OnEntityDestroyed(entity);
+			m_compArrays[cmp]->OnEntityDestroyed(entity);
         }
     }
 private:
-	CompType m_nextCompType = 0;
-	std::unordered_map<const char*, CompType> m_compTypes{};
-	std::unordered_map<const char*, std::shared_ptr<IComponentArray>> m_compArrays{};
+
+	std::array<std::shared_ptr<IComponentArray>, maxCompType> m_compArrays{};
+	CompType m_numCompArrays{};
+	// just for book keeping/bounds checking
+	std::vector<CompType> m_compTypes{};
 
 	// To make comp Array access more convenient
-	
 	template <typename T>
 	std::shared_ptr<ComponentArray<T>> getCompArray()
 	{
 		const char* strID = typeid(T).name();
 
-		return std::static_pointer_cast<ComponentArray<T>> (m_compArrays[strID]);
+		// Component Types "know" about their IDs, so the components can be found efficiently
+		return std::static_pointer_cast<ComponentArray<T>> (m_compArrays[T::ID]);
 	}
 };
