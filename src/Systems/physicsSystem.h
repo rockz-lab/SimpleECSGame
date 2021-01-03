@@ -1,52 +1,53 @@
 #pragma once
 
-#include "ecs/ecs.h"
+#include "ECS/ECS.h"
 #include "Components/gameComponents.h"
 
-#include "Utils/collision.h"
+#include "Utils/Collision.h"
+#include "Collision/constraints.h"
 
 extern ECSManager manager;
 
 class PhysicsSystem : public System
 {
 public:
-	template<typename T>
-	void Update(const T dT)
+	
+	void Update(const float dT)
 	{
-		// test collisions
+		// needed: Mechanism to select the right list of entities
 
-		eID sourceIt = 0;
-		eID targetIt = 0;
-		for (auto const& e_source : m_entities)
-		{
-			for (auto const& e_target : m_entities)
-			{
-				if (e_source != e_target)
-				{
-					CollideCirles(e_source, e_target);
-				}
-				targetIt++;
-			}
-			sourceIt++;
-		}
-		for (auto const& entity : m_entities)
+
+		for (auto const& entity : m_entitiyLists[0])
 		{
 			auto& transform = manager.GetComponent<Transform2D>(entity);
 			auto& grav = manager.GetComponent<Gravity>(entity);
-			auto& mov = manager.GetComponent<MovementState>(entity);
+			auto& state = manager.GetComponent<RigidBodyState>(entity);
 
-			//mov.accel = grav.g;
-			mov.vel += grav.g * static_cast<float>(dT) * glm::vec2(0.0f, 1.0f);
-			transform.pos += mov.vel * static_cast<float>(dT);
+			// apply Gravity and other constant forces/torques
+			printf("%f\n", state.force.y);
+			state.force += glm::vec2(0, grav.g * state.mass);
 
+			state.centerPos_o =		state.centerPos;
+			state.angMomentum_o =	state.angMomentum;
+			state.momentum_o =		state.momentum;
+			state.rotation_o =		state.rotation;
+			state.centerPos_o =		state.centerPos;
 
-			//printf("Position: (%f, %f)\t", transform.pos.x, transform.pos.y);
+			//state.accel = grav.g;
+			state.momentum +=		state.force * dT;
+			state.angMomentum +=	state.torque * dT;
+			state.centerPos +=		state.momentum / state.mass * dT;
+			state.rotation +=		state.angMomentum / state.angMass * dT;
 
-			//printf("Geschwindigkeit: %f\t dT: %f\n", mov.vel.x, static_cast<float>(dT));
+			transform.pos += state.momentum / state.mass * dT;
+			transform.rotation = state.rotation;
+
+			// reset force and torque
+			state.force = {};
+			state.torque = {};
 		}
 	}
 private:
-    void CollideCirles(eID source, eID target);
 };
 
 class CollisionSystem : public System
@@ -56,71 +57,109 @@ public:
 	{
 		eID sourceIt = 0;
 		eID targetIt = 0;
-		for (auto const& e_source : m_entities)
+		auto& collisionEntities = m_entitiyLists[0];
+
+		for (eID const& e_source : collisionEntities)
 		{
-			for (auto const& e_target : m_entities)
+			for (eID const& e_target : collisionEntities)
 			{
-				if (sourceIt < targetIt)
+				if (e_source != e_target)
 				{
-					bool isSourceALine = manager.CheckEntityType<Line>(e_source);
-					bool isTargetALine = manager.CheckEntityType<Line>(e_target);
-					if ((isSourceALine ^ isTargetALine))
+					bool isTriangle_s = manager.CheckCompType<Polygon>(e_source);
+					bool isTriangle_t = manager.CheckCompType<Polygon>(e_target);
+
+					if (isTriangle_s && isTriangle_t)
 					{
-						// do Circle Line check
-						if (manager.CheckEntityType<Circle>(e_target))
+						auto &polyBase_s = manager.GetComponent<Polygon>(e_source);
+						
+						auto poly_t = manager.GetComponent<Polygon>(e_target);
+						auto poly_s = manager.GetComponent<Polygon>(e_source);
+
+						auto& color_s = manager.GetComponent<Color>(e_source);
+						auto& color_t = manager.GetComponent<Color>(e_target);
+
+						auto& transform_s = manager.GetComponent<Transform2D>(e_source);
+						auto& transform_t = manager.GetComponent<Transform2D>(e_target);
+
+						coll::transformPolygon(transform_s.rotation, transform_s.pos, poly_s.poly);
+						coll::transformPolygon(transform_t.rotation, transform_t.pos, poly_t.poly);
+
+						coll::collisionData data{};
+						if (coll::convexPolyCollision(poly_s.poly, poly_t.poly, data))
 						{
-							auto& circ = manager.GetComponent<Circle>(e_target);
-							auto& circle_pos = manager.GetComponent<Transform2D>(e_target).pos;
-							auto& line = manager.GetComponent<Line>(e_source);
-							auto& circle_mov = manager.GetComponent<MovementState>(e_target);
-							collideCircleLine(circle_pos, line, circ, circle_mov);
+							// detect change of collision state:
+							if ((manager.GetComponent<CollisionState>(e_target).status == false) ||
+								(manager.GetComponent<CollisionState>(e_source).status = false) )
+							{
+								color_t.r = 200;
+								color_s.r = 200;
+								eID line = manager.CreateEntity();
+								Line markNormal;
+
+								
+								auto manifold = makeContactManifold(*data.referenceBody, *data.incidentBody, data.collisionFaceIndex);
+								/*glm::vec2 centerPt = 0.5f * (data.v1 + data.v2);
+
+								markNormal.p1 = centerPt;
+								markNormal.p2 = centerPt + data.normal *100.0f;
+								manager.AddComponent<Line>(line, markNormal);*/
+							}
+
+							manager.GetComponent<CollisionState>(e_target).status = true;
+							manager.GetComponent<CollisionState>(e_source).status = true;
 						}
 						else
 						{
-							auto& circ = manager.GetComponent<Circle>(e_source);
-							auto& circle_pos = manager.GetComponent<Transform2D>(e_source).pos;
-							auto& line = manager.GetComponent<Line>(e_target);
-							auto& circle_mov = manager.GetComponent<MovementState>(e_source);
-							collideCircleLine(circle_pos, line, circ, circle_mov);
+							color_s.r = 128;
+							color_t.r = 128;
+							manager.GetComponent<CollisionState>(e_target).status = false;
+							manager.GetComponent<CollisionState>(e_source).status = false;
 						}
+
 					}
+
 				}
-				targetIt++;
+
+				//if (sourceIt < targetIt)
+				//{
+				//	bool isSourceALine = manager.CheckEntityType<Line>(e_source);
+				//	bool isTargetALine = manager.CheckEntityType<Line>(e_target);
+				//	if ((isSourceALine ^ isTargetALine))
+				//	{
+				//		// do Circle Line check
+				//		if (manager.CheckEntityType<Circle>(e_target))
+				//		{
+				//			auto& circ = manager.GetComponent<Circle>(e_target);
+				//			auto& circle_pos = manager.GetComponent<Transform2D>(e_target).pos;
+				//			auto& line = manager.GetComponent<Line>(e_source);
+				//			auto& circle_mov = manager.GetComponent<RigidBodyState>(e_target);
+				//			float g = manager.GetComponent<Gravity>(e_target).g;
+				//			collideCircleLine(circle_pos, line, circ, circle_mov, dT, g);
+				//		}
+				//		else
+				//		{
+				//			auto& circ = manager.GetComponent<Circle>(e_source);
+				//			auto& circle_pos = manager.GetComponent<Transform2D>(e_source).pos;
+				//			auto& line = manager.GetComponent<Line>(e_target);
+				//			auto& circle_mov = manager.GetComponent<RigidBodyState>(e_source);
+				//			float g = manager.GetComponent<Gravity>(e_source).g;
+				//			collideCircleLine(circle_pos, line, circ, circle_mov, dT, g);
+				//		}
+				//	}
+				//	else if ((e_source != e_target) && manager.CheckEntityType<Circle>(e_source) && manager.CheckEntityType<Circle>(e_target))
+				//	{
+				//		CollideCirles(e_source, e_target, dT);
+				//	}
+				//}
+				//targetIt++;
 			}
 			sourceIt++;
 		}
 	}
 private:
+	float elatsicity = 0.4;
+	void CollideCirles(eID source, eID target, float dT);
 
-	void collideCircleLine(glm::vec2& circle_pos, Line& line, Circle& circ, MovementState& circle_mov)
-	{
-		float penetration;
-		if (sec::circle_line(circ.radius, circle_pos, line.p1, line.p2, &penetration))
-		{
-			// resolve collision
-			glm::vec2 linePoint = sec::projectPointOntoLine(circle_pos, line.p1, line.p2);
-
-			glm::vec2 dir = line.p2 - line.p1;
-			glm::vec2 normal = glm::normalize(glm::vec2(dir.y, -dir.x));
-
-			glm::vec2 projAlongNormal = glm::dot(circle_mov.vel, normal) * normal;	// pointer towards the line
-
-			// detect if the line was crossed: if velocity vector shows in the same dir 
-			if (glm::dot(circle_mov.vel, circle_pos - linePoint) > 0)
-			{
-				circle_pos -= (2*circ.radius - penetration + 0.01f) * glm::normalize(circle_pos - linePoint);
-			}
-			else
-			{
-				// move circle away from the line proportional to the amount of penetration
-				circle_pos += (penetration + 0.01f) * glm::normalize(circle_pos - linePoint);
-			}
-
-			//circle_pos - linePoint
-			circle_mov.vel = -2.0f * projAlongNormal + circle_mov.vel;
-
-
-		}
-	}
+	void collideCircleLine(glm::vec2& circle_pos, Line& line, Circle& circ, RigidBodyState& circle_mov, float dT, float g);
 
 };

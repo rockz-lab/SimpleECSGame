@@ -2,20 +2,33 @@
 
 
 #include "ecs/ecs.h"
+#include "Utils/collision.h"
 
 #include <glm/glm.hpp>
 
 
 struct Transform2D : public Component<Transform2D>
 {
-	glm::vec2 pos;
-	glm::mat2 R;
+	glm::vec2 pos{};
+	float rotation{};
 };
 
-struct MovementState : public Component<MovementState>
+struct RigidBodyState : public Component<RigidBodyState>
 {
-	glm::vec2 vel;
-	glm::vec2 accel;
+	float mass;
+	float angMass;
+	glm::vec2 centerPos{};
+	glm::vec2 momentum{};
+	float rotation{};
+	float angMomentum{};
+
+	glm::vec2 centerPos_o;
+	glm::vec2 momentum_o;
+	float rotation_o;
+	float angMomentum_o;
+
+	glm::vec2 force = {};
+	float torque = 0;
 };
 
 struct Gravity : public Component<Gravity>
@@ -48,3 +61,21 @@ struct Line : public Component<Line>
 	glm::vec2 p1;
 	glm::vec2 p2;
 };
+
+
+
+
+struct Polygon : public Component<Polygon>
+{
+	int numVerts{};
+	coll::PolygonData poly;
+};
+
+
+
+struct CollisionState : public Component<CollisionState>
+{
+	bool status = false;
+};
+
+

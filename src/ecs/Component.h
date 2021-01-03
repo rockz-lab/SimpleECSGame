@@ -185,7 +185,7 @@ private:
 	template <typename T>
 	std::shared_ptr<ComponentArray<T>> getCompArray()
 	{
-		const char* strID = typeid(T).name();
+		//const char* strID = typeid(T).name();
 
 		// Component Types "know" about their IDs, so the components can be found efficiently
 		return std::static_pointer_cast<ComponentArray<T>> (m_compArrays[T::ID]);

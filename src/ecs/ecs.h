@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include "Entity.h"
 #include "Component.h"
 #include "System.h"
@@ -10,6 +11,7 @@ public:
 	void Init()
 	{
 		// Create pointers to each manager
+
 		m_systemManager = std::make_unique<SystemManager>();
 		m_compManager = std::make_unique<CompManager>();
 		m_entityManager = std::make_unique<EntityManager>();
@@ -101,7 +103,7 @@ public:
 	}
 
 	template <typename Comp>
-	bool CheckEntityType(eID entity)
+	bool CheckCompType(eID entity)
 	{
 		Signature signature = m_entityManager->GetSignature(entity);
 		return signature.test(GetCompType<Comp>());
