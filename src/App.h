@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "ecs/ecs.h"
+#include "ECS/ECS.h"
 
 #include "Components/gameComponents.h"
 #include "Systems/physicsSystem.h"

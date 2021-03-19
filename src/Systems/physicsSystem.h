@@ -97,7 +97,7 @@ public:
 								Line markNormal;
 
 								
-								auto manifold = makeContactManifold(*data.referenceBody, *data.incidentBody, data.collisionFaceIndex);
+								//auto manifold = makeContactManifold(*data.referenceBody, *data.incidentBody, data.collisionFaceIndex);
 								/*glm::vec2 centerPt = 0.5f * (data.v1 + data.v2);
 
 								markNormal.p1 = centerPt;

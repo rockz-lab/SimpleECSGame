@@ -72,6 +72,7 @@ public:
 		return m_compManager->GetComponent<C>(entity);
 	}
 
+	
 	template <typename C>
 	CompType GetCompType()
 	{
@@ -100,6 +101,11 @@ public:
 		Signature signature;
 		signature.set(GetCompType<Comp>());
 		m_systemManager->SetSignature<S>(signature);
+	}
+
+	Signature& GetSystemSignature(eID entity)
+	{
+		return m_entityManager->GetSignature(entity);
 	}
 
 	template <typename Comp>

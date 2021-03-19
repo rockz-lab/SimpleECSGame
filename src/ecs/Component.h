@@ -6,6 +6,7 @@
 #include <memory>
 #include <typeinfo>
 
+#include "yaml-cpp/yaml.h"
 
 // Components derive from this class
 class BaseComponent
@@ -18,6 +19,7 @@ protected:
 		return m_counter++;
 	};
 	static CompType m_counter;
+
 };
 
 
@@ -26,6 +28,12 @@ template <typename T>
 struct Component : public BaseComponent
 {
 	static const CompType ID;
+	
+	// Compile time polymorphism using CRTP
+	void serialize(const YAML::Emitter& e)
+	{
+		return static_cast<T*>(this)->serialize_impl(e);
+	}
 };
 
 // ID definition -> auto increment, so that each Component Type has it's unique ID
@@ -155,6 +163,11 @@ public:
 		return getCompArray<T>()->GetCompData(entity);
 	}
 
+	void GetComponent(eID entity, CompType compID)
+	{
+		typeid(m_compArrays[compID]);
+	}
+	
 	template <typename T>
 	void AddComponent(eID entity, T component)
 	{

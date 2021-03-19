@@ -6,11 +6,19 @@
 
 #include <glm/glm.hpp>
 
+using namespace YAML;	
 
 struct Transform2D : public Component<Transform2D>
 {
+
 	glm::vec2 pos{};
 	float rotation{};
+
+	void serialize_impl(YAML::Emitter& e)
+	{
+		e << BeginMap;
+		e << Key << "Position" << Value << 
+	}
 };
 
 struct RigidBodyState : public Component<RigidBodyState>

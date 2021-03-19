@@ -2,7 +2,7 @@
 
 #include <queue>
 #include <array>
-#include "ecsTypes.h"
+#include "ECSTypes.h"
 
 class EntityManager
 {
@@ -32,7 +32,7 @@ public:
 		m_signatures[entity] = s;
 	}
 
-	Signature GetSignature(eID entity)
+	Signature& GetSignature(eID entity)
 	{
 		return m_signatures[entity];
 	}

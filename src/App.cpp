@@ -1,7 +1,7 @@
 #include "App.h"
 #include "Factories.h"
 
-
+#include <type_traits>
 #include <chrono>
 
 // initialize the counter
@@ -10,6 +10,7 @@ CompType BaseComponent::m_counter = 0;
 
 App::App()
 {
+
     manager.Init();
     
     manager.RegisterComponent<Gravity>();
@@ -61,6 +62,7 @@ App::App()
     // create line at the Edges of the screen
     eID aLine = manager.CreateEntity();
 
+    
     Transform2D defaultTform;
     defaultTform.pos = {}; defaultTform.rotation = 0;
     manager.AddComponent<Transform2D>(aLine, defaultTform);
