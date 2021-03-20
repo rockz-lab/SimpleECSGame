@@ -9,6 +9,12 @@
 #include "yaml-cpp/yaml.h"
 
 // Components derive from this class
+
+class BaseSerializable
+{
+	virtual void serialize() = 0;
+};
+
 class BaseComponent
 {
 public:
@@ -30,9 +36,9 @@ struct Component : public BaseComponent
 	static const CompType ID;
 	
 	// Compile time polymorphism using CRTP
-	void serialize(const YAML::Emitter& e)
+	void serialize()
 	{
-		return static_cast<T*>(this)->serialize_impl(e);
+		static_cast<T*>(this)->serialize_impl(std::ostream& e);
 	}
 };
 

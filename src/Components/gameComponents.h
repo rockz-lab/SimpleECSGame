@@ -5,19 +5,20 @@
 #include "Utils/collision.h"
 
 #include <glm/glm.hpp>
+#include "Utils/math.h"
 
 using namespace YAML;	
 
 struct Transform2D : public Component<Transform2D>
 {
 
-	glm::vec2 pos{};
+	//glm::vec2 pos{};
+	vec3 pos;
 	float rotation{};
 
-	void serialize_impl(YAML::Emitter& e)
+	void serialize_impl(std::ostream& os)
 	{
-		e << BeginMap;
-		e << Key << "Position" << Value << 
+		os << "Pos:" << pos << "Rotation" << rotation;
 	}
 };
 
