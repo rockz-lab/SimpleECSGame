@@ -9,16 +9,58 @@
 
 using namespace YAML;	
 
+#include <sstream>
+
+void getProperty(std::istream& is, std::string propertyName)
+{
+	
+
+	//std::search(propertyStream
+	//std::string propertyString;
+	//propertyString = propertyStream.str();
+
+	//if (propertyString.find(propertyName))
+	//{
+
+	//}
+
+}
+
 struct Transform2D : public Component<Transform2D>
 {
-
 	//glm::vec2 pos{};
-	vec3 pos;
+	vec2 pos{};
 	float rotation{};
 
 	void serialize_impl(std::ostream& os)
 	{
-		os << "Pos:" << pos << "Rotation" << rotation;
+		os << "Type: " << ID << "; " << "pos: " << pos << "rotation: " << rotation << "; ";
+	}
+	void deserialize_impl(std::istream& is)
+	{
+		getProperty(is, "sad");
+		std::string read;
+		is >> read;
+	}
+};
+
+struct Gravity : public Component<Gravity>
+{
+	float g = 9.81f;
+
+	void serialize_impl(std::ostream& os)
+	{
+		os << "Type: " << ID << "; " << "g: " << g << "; ";
+	}
+};
+
+struct Circle : public Component<Circle>
+{
+	float radius = 20.0f;
+
+	void serialize_impl(std::ostream& os)
+	{
+		os << "Type: " << ID << "; " << "radius: " << radius << "; ";
 	}
 };
 
@@ -26,29 +68,20 @@ struct RigidBodyState : public Component<RigidBodyState>
 {
 	float mass;
 	float angMass;
-	glm::vec2 centerPos{};
-	glm::vec2 momentum{};
+	vec2 centerPos{};
+	vec2 momentum{};
 	float rotation{};
 	float angMomentum{};
 
-	glm::vec2 centerPos_o;
-	glm::vec2 momentum_o;
+	vec2 centerPos_o;
+	vec2 momentum_o;
 	float rotation_o;
 	float angMomentum_o;
 
-	glm::vec2 force = {};
+	vec2 force = {};
 	float torque = 0;
 };
 
-struct Gravity : public Component<Gravity>
-{
-	float g = 9.81f;
-};
-
-struct Circle : public Component<Circle>
-{
-	float radius = 20.0f;
-};
 
 // Should your do vertex buffers, etc as a component?? 
 // For large objects, maybe just use heap dynamic array ..
@@ -67,8 +100,8 @@ struct Color : public Component<Color>
 
 struct Line : public Component<Line>
 {
-	glm::vec2 p1;
-	glm::vec2 p2;
+	vec2 p1;
+	vec2 p2;
 };
 
 

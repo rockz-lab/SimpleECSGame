@@ -9,8 +9,8 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # get all source files in the source directory
-file( GLOB_RECURSE  sourcefiles ${PROJECT_SOURCE_DIR}/src/*.cpp)
-
+#file( GLOB_RECURSE  sourcefiles ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file( GLOB_RECURSE  sourcefiles ${PROJECT_SOURCE_DIR}/src/main.cpp ${PROJECT_SOURCE_DIR}/src/ECS/ECS.cpp)
 
 #if (UNIX)
 #    set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})

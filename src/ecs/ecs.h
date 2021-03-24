@@ -5,6 +5,8 @@
 #include "Component.h"
 #include "System.h"
 
+#include <fstream>
+
 class ECSManager
 {
 public:
@@ -18,6 +20,15 @@ public:
 	}
 	//~ECSManager() = default;
 
+	void Serialize(const std::string& fileName)
+	{
+		std::ofstream file;
+		file.open(fileName);
+
+		file << "componentArrays" << "\n";
+		file << (*m_compManager);
+		file << (*m_entityManager);
+	}
 	// Entity Methods
 
 	eID CreateEntity()

@@ -36,9 +36,13 @@ struct Component : public BaseComponent
 	static const CompType ID;
 	
 	// Compile time polymorphism using CRTP
-	void serialize()
+	void serialize(std::ostream& os)
 	{
-		static_cast<T*>(this)->serialize_impl(std::ostream& e);
+		static_cast<T*>(this)->serialize_impl(os);
+	}
+	void deserialize(std::istream& is)
+	{
+		static_cast<T*>(this)->serialize
 	}
 };
 
@@ -193,6 +197,17 @@ public:
 			m_compArrays[cmp]->OnEntityDestroyed(entity);
         }
     }
+
+	friend std::ostream& operator<<(std::ostream& os, const CompManager& manager)
+	{
+		const char* memoryBegin = reinterpret_cast<const char*>(manager.m_compArrays.data());
+		size_t memorySize = manager.m_compArrays.size();
+
+		os << memorySize << "\n";
+		os.write(memoryBegin, memorySize);
+		os << "\n";
+		return os;
+	}
 private:
 
 	std::array<std::shared_ptr<IComponentArray>, maxCompType> m_compArrays{};

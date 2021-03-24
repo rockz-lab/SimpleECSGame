@@ -17,7 +17,7 @@ MakeCircles::MakeCircles(ECSManager* manager)
 	circleRadius = std::make_unique<uniform_real>(3, 30);
 }
 
-eID MakeCircles::MakeCircle(float radius, glm::vec<3, uint8_t> color, glm::vec2 startPos)
+eID MakeCircles::MakeCircle(float radius, glm::vec<3, uint8_t> color, vec2 startPos)
 {
 	auto entity = m_manager->CreateEntity();
 
@@ -36,7 +36,7 @@ eID MakeCircles::MakeCircle(float radius, glm::vec<3, uint8_t> color, glm::vec2 
 	col.b = color.b;
 	// Movement State
 	RigidBodyState movState;
-	movState.centerPos = { 0.0f, 0.0f };
+	movState.centerPos = { { 0.0f, 0.0f } };
 	// gravity
 	Gravity grav;
 	grav.g = 9.81f;

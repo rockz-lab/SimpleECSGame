@@ -1,10 +1,20 @@
 #include "physicsSystem.h"
 
+#include "Utils/math.h"
 
 #include <iostream>
 #include <cassert>
 
-using namespace glm;
+//using namespace glm;
+
+namespace glm
+{
+	vec2& dot(vec2 a, vec2 b)
+	{
+		return glm::dot(a, b);
+	}
+}
+
 
 bool timeOfImpact_circle_circle(float& t, vec2 const& p1, vec2 const& p2, vec2 const& v1, vec2 const& v2, float r1, float r2)
 {
