@@ -197,6 +197,11 @@ public:
 			m_compArrays[cmp]->OnEntityDestroyed(entity);
         }
     }
+	
+	CompType GetNumCompArrays()
+	{
+		return m_numCompArrays;
+	}
 
 	friend std::ostream& operator<<(std::ostream& os, const CompManager& manager)
 	{
@@ -220,7 +225,7 @@ private:
 	std::shared_ptr<ComponentArray<T>> getCompArray()
 	{
 		//const char* strID = typeid(T).name();
-
+		assert(m_compArrays[T::ID]);
 		// Component Types "know" about their IDs, so the components can be found efficiently
 		return std::static_pointer_cast<ComponentArray<T>> (m_compArrays[T::ID]);
 	}

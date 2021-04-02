@@ -4,6 +4,7 @@
 
 #include "ECS/ECS.h"
 #include "utils/math.h"
+#include "Utils/serialization.h"
 
 #include "Components/gameComponents.h"
 // initialize the counter
@@ -29,6 +30,7 @@ int main()
 
 	manager.Init();
 	eID testEnTT = manager.CreateEntity();
+	eID otherEntity = manager.CreateEntity();
 
 	manager.RegisterComponent<Gravity>();
 	manager.RegisterComponent<Circle>();
@@ -38,43 +40,47 @@ int main()
 	manager.AddComponent(testEnTT, circle);
 	manager.AddComponent(testEnTT, tform);
 
-	
-	manager.Serialize("test.txt");
-	std::ofstream fs;
-	//fs.exceptions(std::ostream::badbit || std::ostream::failbit);
+	manager.AddComponent(otherEntity, circle);
+	manager.AddComponent(otherEntity, tform);
 
-	try
-	{
-		fs.open("test.csv", std::ifstream::trunc);
-	}
-	catch (std::fstream::failure e)
-	{
-		std::cerr << e.what();
-	}
+	manager.Serialize<Gravity, Circle, Transform2D>("test.txt");
 
-	/*tform.serialize(fs);
-	circle.serialize(fs);
-	gravity.serialize(fs);*/
+	//std::ofstream fs;
+	////fs.exceptions(std::ostream::badbit || std::ostream::failbit);
 
-	
-	//std::ifstream inFile;
+	//try
+	//{
+	//	fs.open("test.csv", std::ifstream::trunc);
+	//}
+	//catch (std::fstream::failure e)
+	//{
+	//	std::cerr << e.what();
+	//}
 
-	//inFile.open("test.csv");
+	///*tform.serialize(fs);
+	//circle.serialize(fs);
+	//gravity.serialize(fs);*/
 
-	//tform;
-	//tform.deserialize(inFile);
-	
-	std::array<float, 6> stuff{10, 20, 3.0, 1, -.2, 0.01231};
+	//
+	////std::ifstream inFile;
 
-	std::stringstream ss;
+	////inFile.open("test.csv");
 
-	ss.write(reinterpret_cast<const char*>(stuff.data()), sizeof stuff);
+	////tform;
+	////tform.deserialize(inFile);
+	//
+	//std::array<float, 6> stuff{10, 20, 3.0, 1, -.2, 0.01231};
 
-	std::array<float, 6> other_array;
+	//std::stringstream ss;
 
-	ss.read(reinterpret_cast<char*>(other_array.data()), ss.str().size());
+	//
+	//ss.write(reinterpret_cast<const char*>(stuff.data()), sizeof stuff);
 
-	
-	std::cout << other_array[2] << std::endl;
+	//std::array<float, 6> other_array;
+
+	//ss.read(reinterpret_cast<char*>(other_array.data()), ss.str().size());
+
+	//
+	//std::cout << other_array[2] << std::endl;
 
 }

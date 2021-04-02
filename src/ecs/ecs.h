@@ -20,20 +20,40 @@ public:
 	}
 	//~ECSManager() = default;
 
+	template <typename ... CompTypes>
 	void Serialize(const std::string& fileName)
 	{
 		std::ofstream file;
 		file.open(fileName);
 
+		auto allEntities = m_entityManager->GetActiveEntities();
+
+		for (auto entity : allEntities)
+		{
+			m_numSerializedCompTypes = 0;
+
+			file << "Entity ID: ";
+			file << entity << "\n";
+			
+			SerializeComponents<CompTypes...>(entity, file);
+			file << "\n";
+		}
+		
+		assert(m_compManager->GetNumCompArrays() == m_numSerializedCompTypes && "Please check if all the types in Serialize match the registered types!");
+	}
+
+	/*	std::ofstream file;
+		file.open(fileName);
+
+		
 		file << "componentArrays" << "\n";
 		file << (*m_compManager);
-		file << (*m_entityManager);
-	}
+		file << (*m_entityManager);*/
 	// Entity Methods
 
 	eID CreateEntity()
 	{
-		return m_entityManager->CreateEntity();
+		return m_entityManager->CreateEntity();;
 	}
 
     void DestroyEntity(eID entity)
@@ -142,8 +162,33 @@ private:
 		signature.set(GetCompType<Comp>());
 		SetSystemSignature_impl<None, S, otherComps...>(signature);
 	}
+	
+	template <typename CompType>
+	void SerializeComponent(eID entity, std::ofstream& stream)
+	{
+		if (CheckCompType<CompType>(entity))
+		{
+			auto data = GetComponent<CompType>(entity);
+			data.serialize_impl(stream);
+		}
+		m_numSerializedCompTypes++;
+		stream << "\n";
+	}
+	
+	template <typename None = void, typename Comp, typename ...otherComps>
+	void SerializeComponents(eID entity, std::ofstream& stream)
+	{
+		SerializeComponent<Comp>(entity, stream);
+		SerializeComponents<None, otherComps...>(entity, stream);
+	}
 
-
+	template <typename Comp>
+	void SerializeComponents(eID entity, std::ofstream& stream)
+	{
+		SerializeComponent<Comp>(entity, stream);
+	}
+	
+	CompType m_numSerializedCompTypes{};
 	std::unique_ptr<SystemManager> m_systemManager;
 	std::unique_ptr<CompManager> m_compManager;
 	std::unique_ptr<EntityManager> m_entityManager;

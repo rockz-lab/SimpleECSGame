@@ -1,7 +1,6 @@
 #include <yaml-cpp/yaml.h>
 
-#include "ECS/ECS.h"
-
+#include "ECS/ecs.h"
 #include <iostream>
 extern ECSManager manager;
 
@@ -28,10 +27,4 @@ extern ECSManager manager;
 //        
 //    };
 //}
-
-template<typename T>
-void serialize_comp(const T& comp, std::vector<uint8_t>& data);
-
-void serialize_entity(eID entity);
-
 

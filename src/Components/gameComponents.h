@@ -11,21 +11,6 @@ using namespace YAML;
 
 #include <sstream>
 
-void getProperty(std::istream& is, std::string propertyName)
-{
-	
-
-	//std::search(propertyStream
-	//std::string propertyString;
-	//propertyString = propertyStream.str();
-
-	//if (propertyString.find(propertyName))
-	//{
-
-	//}
-
-}
-
 struct Transform2D : public Component<Transform2D>
 {
 	//glm::vec2 pos{};
@@ -38,7 +23,6 @@ struct Transform2D : public Component<Transform2D>
 	}
 	void deserialize_impl(std::istream& is)
 	{
-		getProperty(is, "sad");
 		std::string read;
 		is >> read;
 	}
