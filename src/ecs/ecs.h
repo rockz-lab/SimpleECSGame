@@ -6,6 +6,7 @@
 #include "System.h"
 
 #include <fstream>
+#include "Utils/Serialization.h"
 
 class ECSManager
 {
@@ -36,7 +37,6 @@ public:
 			file << entity << "\n";
 			
 			SerializeComponents<CompTypes...>(entity, file);
-			file << "\n";
 		}
 		
 		assert(m_compManager->GetNumCompArrays() == m_numSerializedCompTypes && "Please check if all the types in Serialize match the registered types!");
@@ -45,30 +45,27 @@ public:
 	template <typename ...CompTypes>
 	void Deserialize(const std::string& fileName)
 	{
-		std::ifstream file;
-		file.open(fileName);
-
 		// parse the Entities:
-	
-		while (!file.eof())
+		
+		Reader reader(fileName);
+
+		eID current_entity = InvalidIndex;
+		while (!reader.IsDone())
 		{
-			std::string line;
-			std::getline(file, line);
-
-			auto index = line.find("Entity ID");
-			if (index != std::string::npos)
+			switch (reader.GetLineState())
 			{
-				auto start = line.find(":");
-
-				eID entity = std::stoi(line.substr(start+1));
-				std::getline(file, line);
-				
-				DeserializeComponents<CompTypes...>(entity, file);
+			case Reader::LineState::EntityID:
+				current_entity = reader.getEntityID();
+				reader.NextLine();
+				break;
+			case Reader::LineState::CompData:
+				assert(current_entity != InvalidIndex);
+				DeserializeComponents<CompTypes...>(current_entity, reader);
+				break;
 			}
-
 		}
 	}
-
+		
 	eID CreateEntity()
 	{
 		return m_entityManager->CreateEntity();
@@ -208,36 +205,34 @@ private:
 	
 
 	template <typename None = void, typename Comp, typename ...otherComps>
-	void DeserializeComponents(eID entity, std::istream& stream)
+	void DeserializeComponents(eID entity, Reader& reader)
 	{
-		DeserializeComponent<Comp>(entity, stream);
-		DeserializeComponents<otherComps...>(entity, stream);
+		DeserializeComponent<Comp>(entity, reader);
+		DeserializeComponents<None, otherComps...>(entity, reader);
 	}
 
 	template <typename Comp>
-	void DeserializeComponents(eID entity, std::istream& stream)
+	void DeserializeComponents(eID entity, Reader& reader)
 	{
-		DeserializeComponent<Comp>(entity, stream);
+		DeserializeComponent<Comp>(entity, reader);
 	}
 
 	template <typename Comp>
-	void DeserializeComponent(eID entity, std::istream& stream)
+	void DeserializeComponent(eID entity, Reader& reader)
 	{
-		std::string line;
-		std::getline(stream, line);
-
-		auto ID_start = line.find(":")+1;
-		auto ID_end = line.find_first_of(";");
-
-		std::string string_ID = line.substr(ID_start, ID_end);
-		CompType ID = std::stoi(string_ID);
-
-		Comp newComponent;
-		newComponent.deserialize_impl(stream, ID);
-	
-		
-		manager.AddComponent<Comp>(entity, newComponent);
+		if (!reader.IsDone())
+		{
+			CompType ID = reader.GetCompID();
+			if (Comp::ID == ID)
+			{
+				Comp newComponent;
+				newComponent.deserialize_impl(reader, ID);
+				manager.AddComponent<Comp>(entity, newComponent);
+				reader.NextLine();
+			}
+		}
 	}
+
 	
 	CompType m_numSerializedCompTypes{};
 	std::unique_ptr<SystemManager> m_systemManager;

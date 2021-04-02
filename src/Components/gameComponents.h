@@ -1,13 +1,13 @@
 #pragma once
 
 
-#include "ecs/ecs.h"
+#include "ECS/ECS.h"
 #include "Utils/collision.h"
 
 #include <glm/glm.hpp>
 #include "Utils/math.h"
 
-#include <sstream>
+#include "Utils/Serialization.h"
 
 struct Transform2D : public Component<Transform2D>
 {
@@ -19,13 +19,13 @@ struct Transform2D : public Component<Transform2D>
 	{
 		os << "Type: " << ID << "; " << "pos: " << pos << "rotation: " << rotation << "; ";
 	}
-	void deserialize_impl(std::istream& is, CompType compID)
+	void deserialize_impl(Reader& reader, CompType compID)
 	{
 		// We just try out all ComponentTypes and serialize when they match
 		if (compID == ID)
 		{
-			auto pos_entries = getProperty(is, "pos");
-			auto rotation_entries = getProperty(is, "rotation");
+			auto pos_entries = reader.GetProperty("pos");
+			auto rotation_entries = reader.GetProperty("rotation");
 
 			pos.m_vec.x = std::stof(pos_entries[0]);
 			pos.m_vec.y = std::stof(pos_entries[1]);
@@ -44,11 +44,11 @@ struct Gravity : public Component<Gravity>
 		os << "Type: " << ID << "; " << "g: " << g << "; ";
 	}
 
-	void deserialize_impl(std::istream& is, CompType compID)
+	void deserialize_impl(Reader& reader, CompType compID)
 	{
 		if (compID == ID)
 		{
-			auto g_entries = getProperty(is, "g");
+			auto g_entries = reader.GetProperty("g");
 
 			g = std::stof(g_entries[0]);
 		}
@@ -64,11 +64,11 @@ struct Circle : public Component<Circle>
 		os << "Type: " << ID << "; " << "radius: " << radius << "; ";
 	}
 
-	void deserialize_impl(std::istream& is, CompType compID)
+	void deserialize_impl(Reader& reader, CompType compID)
 	{
 		if (compID == ID)
 		{
-			auto radius_entries = getProperty(is, "radius");
+			auto radius_entries = reader.GetProperty("radius");
 
 			radius = std::stof(radius_entries[0]);
 		}
