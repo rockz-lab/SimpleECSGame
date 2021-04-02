@@ -10,11 +10,6 @@
 
 // Components derive from this class
 
-class BaseSerializable
-{
-	virtual void serialize() = 0;
-};
-
 class BaseComponent
 {
 public:
