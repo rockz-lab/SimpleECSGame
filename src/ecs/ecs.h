@@ -41,10 +41,37 @@ public:
 		
 		assert(m_compManager->GetNumCompArrays() == m_numSerializedCompTypes && "Please check if all the types in Serialize match the registered types!");
 	}
+	
+	template <typename ...CompTypes>
+	void Deserialize(const std::string& fileName)
+	{
+		std::ifstream file;
+		file.open(fileName);
+
+		// parse the Entities:
+	
+		while (!file.eof())
+		{
+			std::string line;
+			std::getline(file, line);
+
+			auto index = line.find("Entity ID");
+			if (index != std::string::npos)
+			{
+				auto start = line.find(":");
+
+				eID entity = std::stoi(line.substr(start+1));
+				std::getline(file, line);
+				
+				DeserializeComponents<CompTypes...>(entity, file);
+			}
+
+		}
+	}
 
 	eID CreateEntity()
 	{
-		return m_entityManager->CreateEntity();;
+		return m_entityManager->CreateEntity();
 	}
 
     void DestroyEntity(eID entity)
@@ -155,7 +182,7 @@ private:
 	}
 	
 	template <typename CompType>
-	void SerializeComponent(eID entity, std::ofstream& stream)
+	void SerializeComponent(eID entity, std::ostream& stream)
 	{
 		if (CheckCompType<CompType>(entity))
 		{
@@ -167,16 +194,49 @@ private:
 	}
 	
 	template <typename None = void, typename Comp, typename ...otherComps>
-	void SerializeComponents(eID entity, std::ofstream& stream)
+	void SerializeComponents(eID entity, std::ostream& stream)
 	{
 		SerializeComponent<Comp>(entity, stream);
 		SerializeComponents<None, otherComps...>(entity, stream);
 	}
 
 	template <typename Comp>
-	void SerializeComponents(eID entity, std::ofstream& stream)
+	void SerializeComponents(eID entity, std::ostream& stream)
 	{
 		SerializeComponent<Comp>(entity, stream);
+	}
+	
+
+	template <typename None = void, typename Comp, typename ...otherComps>
+	void DeserializeComponents(eID entity, std::istream& stream)
+	{
+		DeserializeComponent<Comp>(entity, stream);
+		DeserializeComponents<otherComps...>(entity, stream);
+	}
+
+	template <typename Comp>
+	void DeserializeComponents(eID entity, std::istream& stream)
+	{
+		DeserializeComponent<Comp>(entity, stream);
+	}
+
+	template <typename Comp>
+	void DeserializeComponent(eID entity, std::istream& stream)
+	{
+		std::string line;
+		std::getline(stream, line);
+
+		auto ID_start = line.find(":")+1;
+		auto ID_end = line.find_first_of(";");
+
+		std::string string_ID = line.substr(ID_start, ID_end);
+		CompType ID = std::stoi(string_ID);
+
+		Comp newComponent;
+		newComponent.deserialize_impl(stream, ID);
+	
+		
+		manager.AddComponent<Comp>(entity, newComponent);
 	}
 	
 	CompType m_numSerializedCompTypes{};

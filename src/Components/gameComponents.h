@@ -19,10 +19,19 @@ struct Transform2D : public Component<Transform2D>
 	{
 		os << "Type: " << ID << "; " << "pos: " << pos << "rotation: " << rotation << "; ";
 	}
-	void deserialize_impl(std::istream& is)
+	void deserialize_impl(std::istream& is, CompType compID)
 	{
-		std::string read;
-		is >> read;
+		// We just try out all ComponentTypes and serialize when they match
+		if (compID == ID)
+		{
+			auto pos_entries = getProperty(is, "pos");
+			auto rotation_entries = getProperty(is, "rotation");
+
+			pos.m_vec.x = std::stof(pos_entries[0]);
+			pos.m_vec.y = std::stof(pos_entries[1]);
+
+			rotation = std::stof(rotation_entries[0]);
+		}
 	}
 };
 
@@ -34,6 +43,16 @@ struct Gravity : public Component<Gravity>
 	{
 		os << "Type: " << ID << "; " << "g: " << g << "; ";
 	}
+
+	void deserialize_impl(std::istream& is, CompType compID)
+	{
+		if (compID == ID)
+		{
+			auto g_entries = getProperty(is, "g");
+
+			g = std::stof(g_entries[0]);
+		}
+	}
 };
 
 struct Circle : public Component<Circle>
@@ -43,6 +62,16 @@ struct Circle : public Component<Circle>
 	void serialize_impl(std::ostream& os)
 	{
 		os << "Type: " << ID << "; " << "radius: " << radius << "; ";
+	}
+
+	void deserialize_impl(std::istream& is, CompType compID)
+	{
+		if (compID == ID)
+		{
+			auto radius_entries = getProperty(is, "radius");
+
+			radius = std::stof(radius_entries[0]);
+		}
 	}
 };
 

@@ -30,7 +30,7 @@ int main()
 
 	manager.Init();
 	eID testEnTT = manager.CreateEntity();
-	eID otherEntity = manager.CreateEntity();
+	//eID otherEntity = manager.CreateEntity();
 
 	manager.RegisterComponent<Gravity>();
 	manager.RegisterComponent<Circle>();
@@ -40,10 +40,24 @@ int main()
 	manager.AddComponent(testEnTT, circle);
 	manager.AddComponent(testEnTT, tform);
 
-	manager.AddComponent(otherEntity, circle);
-	manager.AddComponent(otherEntity, tform);
+	//manager.AddComponent(otherEntity, circle);
+	//manager.AddComponent(otherEntity, tform);
 
 	manager.Serialize<Gravity, Circle, Transform2D>("test.txt");
+
+
+	manager.DestroyEntity(testEnTT);
+	//manager.DestroyEntity(otherEntity);
+
+
+	eID newTest = manager.CreateEntity();
+	eID newOtherTest = manager.CreateEntity();
+	manager.Deserialize<Gravity, Circle, Transform2D>("test.txt");
+	
+
+	auto& circleHandle = manager.GetComponent<Circle>(0);
+	std::cout << "circle:\n";
+	std::cout << circleHandle.radius;
 
 	//std::ofstream fs;
 	////fs.exceptions(std::ostream::badbit || std::ostream::failbit);
@@ -61,26 +75,18 @@ int main()
 	//circle.serialize(fs);
 	//gravity.serialize(fs);*/
 
+	
+	std::ifstream inFile;
+
+	//inFile.open("test.txt");
+
+	//std::string discard;
+	//std::getline(inFile, discard);
+	//std::getline(inFile, discard);
+
+	//auto result = getProperty(inFile, "pos");
 	//
-	////std::ifstream inFile;
-
-	////inFile.open("test.csv");
-
-	////tform;
-	////tform.deserialize(inFile);
-	//
-	//std::array<float, 6> stuff{10, 20, 3.0, 1, -.2, 0.01231};
-
-	//std::stringstream ss;
-
-	//
-	//ss.write(reinterpret_cast<const char*>(stuff.data()), sizeof stuff);
-
-	//std::array<float, 6> other_array;
-
-	//ss.read(reinterpret_cast<char*>(other_array.data()), ss.str().size());
-
-	//
-	//std::cout << other_array[2] << std::endl;
+	//std::cout << result[0] << std::endl;
+	//std::cout << result[1] << std::endl;
 
 }
