@@ -7,8 +7,6 @@
 #include <glm/glm.hpp>
 #include "Utils/math.h"
 
-using namespace YAML;	
-
 #include <sstream>
 
 struct Transform2D : public Component<Transform2D>
