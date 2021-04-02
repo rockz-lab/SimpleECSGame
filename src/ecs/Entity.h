@@ -44,21 +44,6 @@ public:
 		return m_signatures[entity];
 	}
 
-	//friend std::ostream& operator << (std::ostream& os, EntityManager& manager)
-	//{
-	//	const char* signaturesBegin = reinterpret_cast<const char*>(manager.m_signatures.data());
-	//	size_t signaturesSize = sizeof manager.m_signatures;
-
-	//	os << "Signatures\n";
-	//	os << signaturesSize << "\n";
-	//	os.write(signaturesBegin, signaturesSize);
-	//	os << "\n";
-	//
-	//	manager.SerializeAvailableIDs(os);
-
-	//	return os;
-	//}
-
 	std::vector<eID> GetActiveEntities()
 	{
 		std::vector<eID> m_activeEntitiesOut;

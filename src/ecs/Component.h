@@ -34,16 +34,6 @@ template <typename T>
 struct Component : public BaseComponent
 {
 	static const CompType ID;
-	
-	// Compile time polymorphism using CRTP
-	void serialize(std::ostream& os)
-	{
-		static_cast<T*>(this)->serialize_impl(os);
-	}
-	void deserialize(std::istream& is)
-	{
-		static_cast<T*>(this)->serialize
-	}
 };
 
 // ID definition -> auto increment, so that each Component Type has it's unique ID
@@ -201,17 +191,6 @@ public:
 	CompType GetNumCompArrays()
 	{
 		return m_numCompArrays;
-	}
-
-	friend std::ostream& operator<<(std::ostream& os, const CompManager& manager)
-	{
-		const char* memoryBegin = reinterpret_cast<const char*>(manager.m_compArrays.data());
-		size_t memorySize = manager.m_compArrays.size();
-
-		os << memorySize << "\n";
-		os.write(memoryBegin, memorySize);
-		os << "\n";
-		return os;
 	}
 private:
 
