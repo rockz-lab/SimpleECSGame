@@ -42,15 +42,6 @@ public:
 		assert(m_compManager->GetNumCompArrays() == m_numSerializedCompTypes && "Please check if all the types in Serialize match the registered types!");
 	}
 
-	/*	std::ofstream file;
-		file.open(fileName);
-
-		
-		file << "componentArrays" << "\n";
-		file << (*m_compManager);
-		file << (*m_entityManager);*/
-	// Entity Methods
-
 	eID CreateEntity()
 	{
 		return m_entityManager->CreateEntity();;

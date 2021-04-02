@@ -59,7 +59,5 @@ private:
 	std::array<Signature, maxEntities> m_signatures;
 	std::deque<eID> m_availableIDs;
 	std::bitset<maxEntities> m_activeEntities;
-
-	
 };
 

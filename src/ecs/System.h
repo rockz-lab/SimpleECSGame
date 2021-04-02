@@ -12,7 +12,6 @@ class System
 {
 public:
 	std::vector<std::set<eID>> m_entitiyLists;
-
 };
 
 

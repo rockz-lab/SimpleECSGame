@@ -92,14 +92,11 @@ public:
 		m_entityToIndex[m_indexToEntity[lastIndex]] = arrIndex;
 		m_entityToIndex[arrIndex] = InvalidIndex;
 
-
 		m_indexToEntity[arrIndex] = m_indexToEntity[lastIndex];
 		m_indexToEntity[lastIndex] = InvalidIndex;
 
-
 		m_size--;
 	}
-
 
 	T& GetCompData(eID entity)
 	{
