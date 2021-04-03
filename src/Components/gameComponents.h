@@ -27,8 +27,8 @@ struct Transform2D : public Component<Transform2D>
 			auto pos_entries = reader.GetProperty("pos");
 			auto rotation_entries = reader.GetProperty("rotation");
 
-			pos.m_vec.x = std::stof(pos_entries[0]);
-			pos.m_vec.y = std::stof(pos_entries[1]);
+			pos.x = std::stof(pos_entries[0]);
+			pos.y = std::stof(pos_entries[1]);
 
 			rotation = std::stof(rotation_entries[0]);
 		}
@@ -116,15 +116,11 @@ struct Line : public Component<Line>
 };
 
 
-
-
-struct Polygon : public Component<Polygon>
+struct Triangle : public Component<Triangle>
 {
-	int numVerts{};
-	coll::PolygonData poly;
+	std::array<vec2, 3> vertices;
+	std::array<vec2, 3> normals;
 };
-
-
 
 struct CollisionState : public Component<CollisionState>
 {

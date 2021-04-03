@@ -23,19 +23,19 @@ void ApplyForces::Update(float dT)
 				mousePos = { sf::Mouse::getPosition().x, sf::Mouse::getPosition().y };
 
 				// check, if our triangle containes the current mouse positions
-				const auto& poly = manager.GetComponent<Polygon>(entity);
+				const auto& poly = manager.GetComponent<Triangle>(entity);
 
 				auto poly_world = poly;
 
-				for (auto& v : poly_world.poly.vertices)
-					v = glm::rotate(v, transform.rotation) + transform.pos;
-				for (auto& n : poly_world.poly.normals)
-					n = glm::rotate(n, transform.rotation);
+				for (auto& v : poly_world.vertices)
+					v = glm::rotate(v.to_glm(), transform.rotation) + transform.pos;
+				for (auto& n : poly_world.normals)
+					n = glm::rotate(n.to_glm(), transform.rotation);
 
-				if (coll::pointInPoly(mousePos, poly_world.poly))
+				if (coll::pointInPoly(mousePos, poly_world))
 				{
 					// get the local position on the triangle by undoing the transform
-					grabPointLocal = glm::rotate(mousePos - transform.pos, -transform.rotation);
+					grabPointLocal = glm::rotate((mousePos - transform.pos).to_glm(), -transform.rotation);
 					isDragging = true;
 					startedDrag = true;
 					selectedEntity = entity; 

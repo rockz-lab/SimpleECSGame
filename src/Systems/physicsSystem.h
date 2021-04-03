@@ -65,15 +65,15 @@ public:
 			{
 				if (e_source != e_target)
 				{
-					bool isTriangle_s = manager.CheckCompType<Polygon>(e_source);
-					bool isTriangle_t = manager.CheckCompType<Polygon>(e_target);
+					bool isTriangle_s = manager.CheckCompType<Triangle>(e_source);
+					bool isTriangle_t = manager.CheckCompType<Triangle>(e_target);
 
 					if (isTriangle_s && isTriangle_t)
 					{
-						auto &polyBase_s = manager.GetComponent<Polygon>(e_source);
+						auto &polyBase_s = manager.GetComponent<Triangle>(e_source);
 						
-						auto poly_t = manager.GetComponent<Polygon>(e_target);
-						auto poly_s = manager.GetComponent<Polygon>(e_source);
+						auto poly_t = manager.GetComponent<Triangle>(e_target);
+						auto poly_s = manager.GetComponent<Triangle>(e_source);
 
 						auto& color_s = manager.GetComponent<Color>(e_source);
 						auto& color_t = manager.GetComponent<Color>(e_target);
@@ -81,10 +81,10 @@ public:
 						auto& transform_s = manager.GetComponent<Transform2D>(e_source);
 						auto& transform_t = manager.GetComponent<Transform2D>(e_target);
 
-						coll::transformPolygon(transform_s.rotation, transform_s.pos, poly_s.poly);
-						coll::transformPolygon(transform_t.rotation, transform_t.pos, poly_t.poly);
+						coll::transformPolygon(transform_s.rotation, transform_s.pos, poly_s);
+						coll::transformPolygon(transform_t.rotation, transform_t.pos, poly_t);
 
-						coll::collisionData data{};
+						//coll::collisionData data{};
 						if (coll::convexPolyCollision(poly_s.poly, poly_t.poly, data))
 						{
 							// detect change of collision state:

@@ -22,7 +22,7 @@ int main()
 	//std::ostream& os = std::cout;
 
 	Transform2D tform;
-	tform.pos.m_vec = glm::vec2({ 1.0f, 2.0f });
+	tform.pos = vec2(1.0f, 2.0f );
 
 	manager.Init();
 	eID entityOne = manager.CreateEntity();
@@ -79,8 +79,14 @@ int main()
 	
 
 	auto& circleHandle = manager.GetComponent<Circle>(1);
+
+	circleHandle.radius += 2;
 	std::cout << "circle:\n";
-	std::cout << circleHandle.radius;
+	std::cout << circleHandle.radius << "\n";
+
+	auto& handle = manager.GetComponent<Transform2D>(1);
+	std::cout << "pos:\n";
+	std::cout << handle.pos * 2 << "\n";
 
 	//std::ofstream fs;
 	////fs.exceptions(std::ostream::badbit || std::ostream::failbit);

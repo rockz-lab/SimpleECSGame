@@ -130,11 +130,16 @@ namespace coll
 		std::vector<glm::vec2> normals;
 	};
 
-
-
-	inline void transformPolygon(float rotation, const glm::vec2 &translation, PolygonData &poly)
+	template <int N>
+	struct Static_Poly
 	{
-
+		std::array<glm::vec2, N> vertices;
+		std::array<glm::vec2, N> normals;
+	};
+	
+	template <int N>
+	inline void transformPolygon(float rotation, const glm::vec2 &translation, Static_Poly<N> &poly)
+	{
 		for (auto& n : poly.normals)
 			n = glm::rotate(n, rotation);
 
@@ -149,8 +154,8 @@ namespace coll
 		int collisionFaceIndex;
 	};
 
-
-	inline bool convexPolyCollision(const PolygonData &polyA, const PolygonData &polyB, collisionData& data)
+	template <int N, int M>
+	inline bool convexPolyCollision(const Static_Poly<N> &polyA, const Static_Poly<M> &polyB)
 	{
 		// Project all the vertices of both polygons onto the axes defined by all the normals
 
@@ -217,8 +222,9 @@ namespace coll
 			it_normalsA != normalsA.end() ? ++it_normalsA : ++it_normalsB;
 		}
 
+		// Here we will determine, which body is incident or reference
 		// reference Body has the face of the collision normal, incident is the other body
-		if (minIndex < polyA.vertices.size())
+		/*if (minIndex < polyA.vertices.size())
 		{
 			data.referenceBody = const_cast<PolygonData*>(&polyA);
 			data.incidentBody = const_cast<PolygonData*>(&polyB);
@@ -229,7 +235,7 @@ namespace coll
 			data.referenceBody = const_cast<PolygonData*>(&polyB);
 			data.incidentBody = const_cast<PolygonData*>(&polyA);
 			data.collisionFaceIndex = minIndex & 3;
-		}
+		}*/
 
 		return true;
 	}

@@ -7,13 +7,13 @@
 
 //using namespace glm;
 
-namespace glm
-{
-	vec2& dot(vec2 a, vec2 b)
-	{
-		return glm::dot(a, b);
-	}
-}
+//namespace glm
+//{
+//	vec2& dot(vec2 a, vec2 b)
+//	{
+//		return glm::dot(a, b);
+//	}
+//}
 
 
 bool timeOfImpact_circle_circle(float& t, vec2 const& p1, vec2 const& p2, vec2 const& v1, vec2 const& v2, float r1, float r2)
@@ -21,8 +21,8 @@ bool timeOfImpact_circle_circle(float& t, vec2 const& p1, vec2 const& p2, vec2 c
 	// calculate the impact time of two circles assuming linear trajectories
 	// given the previous positions and current velocities calculate the incremental timestep to get to the actual time of impact
 
-	float p = 2 * glm::dot((p1 - p2), (v1 - v2)) / glm::dot((v1 - v2), (v1 - v2));
-	float q = ( glm::dot((p1 - p2), (p1 - p2)) - r1*r1 - r2*r2 ) / glm::dot((v1 - v2), (v1 - v2));
+	float p = 2.0f * dot((p1 - p2), (v1 - v2)) / dot((v1 - v2), (v1 - v2));
+	float q = ( dot((p1 - p2), (p1 - p2)) - r1*r1 - r2*r2 ) / dot((v1 - v2), (v1 - v2));
 
 	// solve quadratic equation
 	float discriminant = (p / 2.0f) * (p / 2.0f) - q;
@@ -37,13 +37,13 @@ bool timeOfImpact_circle_circle(float& t, vec2 const& p1, vec2 const& p2, vec2 c
 bool timeOfImpact_circle_line(float& t, vec2& p1, vec2& p2, vec2& l1, vec2& l2, float r)
 {
 	vec2 dir = l2 - l1;
-	vec2 n = glm::normalize(vec2( dir.y, -dir.x ));
+	vec2 n = normalize(vec2( dir.y, -dir.x ));
 
-	float t1 = (r - glm::dot(n, p1)) / glm::dot(n, (p2 - p1));
-	float t2 = (r - glm::dot(-n, p1)) / glm::dot(-n, (p2 - p1));
+	float t1 = (r - dot(n, p1)) / dot(n, (p2 - p1));
+	float t2 = (r - dot(-n, p1)) / dot(-n, (p2 - p1));
 	float t_out = min(t1, t2);
 	printf("Time of impact: %f\n", t_out);
-	printf("p2 -p1: %f\n", glm::normalize(p2 - p1));
+	printf("p2 -p1: %f\n", normalize(p2 - p1));
 	printf("p2: %f, %f\n", p1.x, p1.y);
 	printf("p2: %f, %f\n", p2.x, p2.y);
 	if (t_out > 0)
