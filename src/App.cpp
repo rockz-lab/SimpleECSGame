@@ -13,16 +13,8 @@ App::App()
 
     manager.Init();
     
-    manager.RegisterComponent<Gravity>();
-    manager.RegisterComponent<Transform2D>();
-    manager.RegisterComponent<RigidBodyState>();
-    manager.RegisterComponent<Line>();
-    manager.RegisterComponent<Color>();
-    manager.RegisterComponent<CollisionState>();
-
-    manager.RegisterComponent<Circle>();
-    manager.RegisterComponent<Polygon>();
-
+    manager.RegisterComponents<Gravity, Transform2D, RigidBodyState, Line, Color, CollisionState, Circle, Polygon>();
+   
     physicssystem = manager.RegisterSystem<PhysicsSystem>();
     rendersystem = manager.RegisterSystem<RenderSystem>();
     collisionsystem = manager.RegisterSystem<CollisionSystem>();
@@ -106,7 +98,10 @@ void App::Run()
             {
                 m_window->close();
             }
-
+            if (event.key.code == sf::Keyboard::F && event.key.control)
+            {
+                manager.Serialize("test.txt");
+            }
         }
 
         auto t1 = std::chrono::system_clock::now();

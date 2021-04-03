@@ -9,10 +9,12 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # get all source files in the source directory
-#file( GLOB_RECURSE  sourcefiles ${PROJECT_SOURCE_DIR}/src/*.cpp)
-file( GLOB_RECURSE  sourcefiles ${PROJECT_SOURCE_DIR}/src/main.cpp
-							${PROJECT_SOURCE_DIR}/src/ECS/ECS.cpp
-							)
+file( GLOB_RECURSE  sourcefiles ${PROJECT_SOURCE_DIR}/src/ECS/*.cpp
+							#${PROJECT_SOURCE_DIR}/src/Systems/*.cpp
+)
+#file( GLOB_RECURSE  sourcefiles ${PROJECT_SOURCE_DIR}/src/main.cpp
+#							${PROJECT_SOURCE_DIR}/src/ECS/ECS.cpp
+#							)
 
 #if (UNIX)
 #    set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
@@ -22,11 +24,11 @@ find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
 
-add_executable(game ${sourcefiles})
-target_include_directories(game PUBLIC ${PROJECT_SOURCE_DIR}/src)
+#add_executable(game ${sourcefiles})
+add_executable(tests ${PROJECT_SOURCE_DIR}/src/Tests/test_serialization.cpp ${sourcefiles})
+#target_include_directories(game PUBLIC ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(tests PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
-target_link_libraries(game PRIVATE glm)
-target_link_libraries(game PRIVATE sfml-graphics sfml-audio)
-target_link_libraries(game PRIVATE Eigen3::Eigen)
-
+#target_link_libraries(game PRIVATE glm sfml-graphics sfml-audio Eigen3::Eigen)
+target_link_libraries(tests PRIVATE glm sfml-graphics sfml-audio Eigen3::Eigen)
 
