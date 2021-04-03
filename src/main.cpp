@@ -32,24 +32,22 @@ int main()
 	eID testEnTT = manager.CreateEntity();
 	eID otherEntity = manager.CreateEntity();
 
-	manager.RegisterComponent<Gravity>();
-	manager.RegisterComponent<Circle>();
-	manager.RegisterComponent<Transform2D>();
+	manager.RegisterComponents<Gravity, Circle, Transform2D>();
 
-	//manager.AddComponent(testEnTT, gravity);
-	//manager.AddComponent(testEnTT, circle);
-	//manager.AddComponent(testEnTT, tform);
+	manager.AddComponent(testEnTT, gravity);
+	manager.AddComponent(testEnTT, circle);
+	manager.AddComponent(testEnTT, tform);
 
-	//manager.AddComponent(otherEntity, circle);
-	//manager.AddComponent(otherEntity, tform);
+	manager.AddComponent(otherEntity, circle);
+	manager.AddComponent(otherEntity, tform);
 
-	//manager.Serialize<Gravity, Circle, Transform2D>("test.txt");
+	manager.Serialize<Gravity, Circle, Transform2D>("test.txt");
 
-	//manager.DestroyEntity(testEnTT);
-	//manager.DestroyEntity(otherEntity);
+	manager.DestroyEntity(testEnTT);
+	manager.DestroyEntity(otherEntity);
 
-	//eID newTest = manager.CreateEntity();
-	//eID newOtherTest = manager.CreateEntity();
+	eID newTest = manager.CreateEntity();
+	eID newOtherTest = manager.CreateEntity();
 
 
 	//manager.AddComponent(newTest, circle);

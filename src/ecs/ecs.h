@@ -80,10 +80,23 @@ public:
     }
 	// Component Methods
 
-	template <typename C>
+	template <typename Comp>
 	void RegisterComponent()
 	{
-		m_compManager->RegisterComponent<C>();
+		m_compManager->RegisterComponent<Comp>();
+	}
+
+	template <typename None = void, typename Comp, typename ...OtherComp>
+	void RegisterComponents()
+	{
+		RegisterComponent<Comp>();
+		RegisterComponents<None, OtherComp...>();
+	}
+
+	template <typename Comp>
+	void RegisterComponents()
+	{
+		RegisterComponent<Comp>();
 	}
 
 	template <typename C>
