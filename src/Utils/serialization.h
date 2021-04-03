@@ -32,7 +32,10 @@ public:
 	{
 		std::string line = GetCurrentLine();
 		std::string searchString = "Type:";
-		int start = line.find(searchString) + searchString.length();
+
+		auto index = line.find(searchString);
+		assert(index = std::string::npos && "No Type identifier found in this line.");
+		int start = index + searchString.length();
 		int end = line.find(";");
 		CompType compID = std::stoi(line.substr(start, end - start));
 		return compID;
@@ -92,7 +95,9 @@ public:
 
 	void NextLine()
 	{
+		GetCurrentLine();
 		is->seekg(curr_pos);
+		prev_pos = curr_pos;
 	}
 
 	bool IsDone()

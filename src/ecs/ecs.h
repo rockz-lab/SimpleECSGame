@@ -198,9 +198,9 @@ private:
 		{
 			auto data = GetComponent<CompType>(entity);
 			data.serialize_impl(stream);
+			stream << "\n";
 		}
 		m_numSerializedCompTypes++;
-		stream << "\n";
 	}
 	
 	template <typename None = void, typename Comp, typename ...otherComps>
@@ -235,13 +235,16 @@ private:
 	{
 		if (!reader.IsDone())
 		{
-			CompType ID = reader.GetCompID();
-			if (Comp::ID == ID)
+			if (reader.GetLineState() == Reader::LineState::CompData)
 			{
-				Comp newComponent;
-				newComponent.deserialize_impl(reader, ID);
-				manager.AddComponent<Comp>(entity, newComponent);
-				reader.NextLine();
+				CompType ID = reader.GetCompID();
+				if (Comp::ID == ID)
+				{
+					Comp newComponent;
+					newComponent.deserialize_impl(reader, ID);
+					manager.AddComponent<Comp>(entity, newComponent);
+					reader.NextLine();
+				}
 			}
 		}
 	}

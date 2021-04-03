@@ -73,21 +73,24 @@ public:
 
 		// Remove from array index.
 
-		auto arrIndex = m_entityToIndex[entity];
-		auto lastIndex = m_size - 1;
-		// copy last Index
+		auto originalIndex = m_entityToIndex[entity];
+		auto lastIndex = m_size-1;
+
+		// copy entity at last Index
 		T copiedComp = m_components[lastIndex];
 
 		// Move the element at the end into the free array index
-		m_components[arrIndex] = copiedComp;
+		m_components[originalIndex] = copiedComp;
 		//m_components[lastIndex] = InvalidIndex;
 
 		// Update the maps
-		//eID lastIndexEntity = m_indexToEntity[lastIndex];
-		m_entityToIndex[m_indexToEntity[lastIndex]] = arrIndex;
-		m_entityToIndex[arrIndex] = InvalidIndex;
+		auto lastIndexEntity = m_indexToEntity[lastIndex];
+		auto originalIndexEntity = m_indexToEntity[originalIndex];
 
-		m_indexToEntity[arrIndex] = m_indexToEntity[lastIndex];
+		m_entityToIndex[lastIndexEntity] = originalIndex;
+		m_entityToIndex[originalIndexEntity] = InvalidIndex;
+
+		m_indexToEntity[originalIndex] = lastIndexEntity;
 		m_indexToEntity[lastIndex] = InvalidIndex;
 
 		m_size--;

@@ -17,7 +17,7 @@ struct Transform2D : public Component<Transform2D>
 
 	void serialize_impl(std::ostream& os)
 	{
-		os << "Type: " << ID << "; " << "pos: " << pos << "rotation: " << rotation << "; ";
+		os << "Type: " << ID << "; " << "pos: " << pos << "rotation: " << rotation << ";";
 	}
 	void deserialize_impl(Reader& reader, CompType compID)
 	{
@@ -41,7 +41,7 @@ struct Gravity : public Component<Gravity>
 
 	void serialize_impl(std::ostream& os)
 	{
-		os << "Type: " << ID << "; " << "g: " << g << "; ";
+		os << "Type: " << ID << "; " << "g: " << g << ";";
 	}
 
 	void deserialize_impl(Reader& reader, CompType compID)
@@ -57,11 +57,11 @@ struct Gravity : public Component<Gravity>
 
 struct Circle : public Component<Circle>
 {
-	float radius = 20.0f;
+	float radius = 0.0f;
 
 	void serialize_impl(std::ostream& os)
 	{
-		os << "Type: " << ID << "; " << "radius: " << radius << "; ";
+		os << "Type: " << ID << "; " << "radius: " << radius << ";";
 	}
 
 	void deserialize_impl(Reader& reader, CompType compID)

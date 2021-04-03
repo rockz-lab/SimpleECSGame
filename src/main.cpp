@@ -22,32 +22,48 @@ int main()
 	//std::ostream& os = std::cout;
 
 	Transform2D tform;
-
-	Gravity gravity;
-	gravity.g = 9.81;
-	Circle circle;
-	circle.radius = 20;
+	tform.pos.m_vec = glm::vec2({ 1.0f, 2.0f });
 
 	manager.Init();
-	eID testEnTT = manager.CreateEntity();
-	eID otherEntity = manager.CreateEntity();
+	eID entityOne = manager.CreateEntity();
+	eID entityTwo = manager.CreateEntity();
+	eID entityThree = manager.CreateEntity();
 
-	manager.RegisterComponents<Gravity, Circle, Transform2D>();
+	{
+		Gravity gravity;
+		gravity.g = 9.81;
+		Circle circle;
+		circle.radius = 20;
+		Circle smallCircle;
+		smallCircle.radius = 2;
+		Circle bigCircle;
+		bigCircle.radius = 60;
 
-	manager.AddComponent(testEnTT, gravity);
-	manager.AddComponent(testEnTT, circle);
-	manager.AddComponent(testEnTT, tform);
 
-	manager.AddComponent(otherEntity, circle);
-	manager.AddComponent(otherEntity, tform);
+		manager.RegisterComponents<Gravity, Circle, Transform2D>();
+
+		manager.AddComponent(entityOne, gravity);
+		manager.AddComponent(entityOne, smallCircle);
+		manager.AddComponent(entityOne, tform);
+
+		manager.AddComponent(entityTwo, bigCircle);
+		manager.AddComponent(entityTwo, tform);
+
+
+		manager.AddComponent(entityThree, tform);
+		manager.AddComponent(entityThree, circle);
+
+	}
 
 	manager.Serialize<Gravity, Circle, Transform2D>("test.txt");
 
-	manager.DestroyEntity(testEnTT);
-	manager.DestroyEntity(otherEntity);
+	manager.DestroyEntity(entityOne);
+	manager.DestroyEntity(entityThree);
+	manager.DestroyEntity(entityTwo);
 
 	eID newTest = manager.CreateEntity();
 	eID newOtherTest = manager.CreateEntity();
+	eID oneMoreTest = manager.CreateEntity();
 
 
 	//manager.AddComponent(newTest, circle);
@@ -62,7 +78,7 @@ int main()
 	manager.Deserialize<Gravity, Circle, Transform2D>("test.txt");
 	
 
-	auto& circleHandle = manager.GetComponent<Circle>(0);
+	auto& circleHandle = manager.GetComponent<Circle>(1);
 	std::cout << "circle:\n";
 	std::cout << circleHandle.radius;
 
