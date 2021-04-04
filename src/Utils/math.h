@@ -24,7 +24,7 @@ struct vec2
 		m_vec = { x, y };
 	}
 
-	vec2(glm::vec2& vec) : m_vec(vec) {};
+	vec2(const glm::vec2& vec) : m_vec(vec) {};
 
 	float& x = m_vec.x;
 	float& y = m_vec.y;
@@ -97,9 +97,15 @@ struct vec2
 	{
 		return this->m_vec;
 	}
+
+	const glm::vec2& to_glm() const
+	{
+		return this->m_vec;
+	}
 	friend float dot(const vec2& v1, const vec2& v2)
 	{
 		float out = glm::dot(v1.m_vec, v2.m_vec);
+		return out;
 	}
 
 	friend vec2 normalize(const vec2& v)

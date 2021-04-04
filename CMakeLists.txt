@@ -11,6 +11,9 @@ endif()
 # get all source files in the source directory
 file( GLOB_RECURSE  sourcefiles ${PROJECT_SOURCE_DIR}/src/ECS/*.cpp
 							${PROJECT_SOURCE_DIR}/src/Systems/*.cpp
+							${PROJECT_SOURCE_DIR}/src/main.cpp
+							${PROJECT_SOURCE_DIR}/src/App.cpp
+							${PROJECT_SOURCE_DIR}/src/Factories.cpp
 )
 #file( GLOB_RECURSE  sourcefiles ${PROJECT_SOURCE_DIR}/src/main.cpp
 #							${PROJECT_SOURCE_DIR}/src/ECS/ECS.cpp

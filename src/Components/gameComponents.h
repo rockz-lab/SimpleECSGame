@@ -91,6 +91,8 @@ struct RigidBodyState : public Component<RigidBodyState>
 
 	vec2 force = {};
 	float torque = 0;
+
+	
 };
 
 
@@ -115,12 +117,13 @@ struct Line : public Component<Line>
 	vec2 p2;
 };
 
-
-struct Triangle : public Component<Triangle>
+template <int N>
+struct Polygon : public Component<Polygon<N>>
 {
-	std::array<vec2, 3> vertices;
-	std::array<vec2, 3> normals;
+	coll::Static_Poly<N> vertexData;
 };
+
+using Triangle = Polygon<3>;
 
 struct CollisionState : public Component<CollisionState>
 {

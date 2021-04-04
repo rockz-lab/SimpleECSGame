@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "ecs/ecsTypes.h"
-
+#include "math.h"
 
 namespace coll
 {
@@ -138,13 +138,13 @@ namespace coll
 	};
 	
 	template <int N>
-	inline void transformPolygon(float rotation, const glm::vec2 &translation, Static_Poly<N> &poly)
+	inline void transformPolygon(float rotation, const vec2 &translation, Static_Poly<N> &poly)
 	{
 		for (auto& n : poly.normals)
 			n = glm::rotate(n, rotation);
 
 		for (auto& v : poly.vertices)
-			v = glm::rotate(v, rotation) + translation;
+			v = glm::rotate(v, rotation) + translation.to_glm();
 	}
 
 	struct collisionData
@@ -241,15 +241,14 @@ namespace coll
 	}
 
 	
-	inline bool pointInPoly(const glm::vec2 &point, const PolygonData &polygon)
+	inline bool pointInPoly(const glm::vec2 &point, const coll::Static_Poly<3> &polygon)
 	{
 		bool isInside = true;
 		// traverse all the  edges
 		for (int i = 0; i < polygon.vertices.size(); i++)
 		{
-			auto line_indices = polygon.indices[i];
-			auto first = polygon.vertices[line_indices.first];
-			auto second = polygon.vertices[line_indices.second];
+			auto first = polygon.vertices[i];
+			auto second = polygon.vertices[(i+1)%3];
 
 			glm::vec2 normal = polygon.normals[i];
 			// check, if point is in positive normal directions

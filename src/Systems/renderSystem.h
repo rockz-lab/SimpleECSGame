@@ -26,9 +26,9 @@ public:
 			// For testing purposes, we just create the vertex buffer on the fly
 			//sf::CircleShape circle(circleComp.radius);
 
-			if (manager.CheckCompType<Polygon>(entity))
+			if (manager.CheckCompType<Triangle>(entity))
 			{
-				auto& triData = manager.GetComponent<Polygon>(entity).poly;
+				auto& triData = manager.GetComponent<Triangle>(entity).vertexData;
 
 				auto triangleColor = sf::Color(color.r, color.g, color.b);
 				sf::VertexArray vertArr(sf::Triangles, 3);

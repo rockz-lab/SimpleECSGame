@@ -41,7 +41,7 @@ bool timeOfImpact_circle_line(float& t, vec2& p1, vec2& p2, vec2& l1, vec2& l2, 
 
 	float t1 = (r - dot(n, p1)) / dot(n, (p2 - p1));
 	float t2 = (r - dot(-n, p1)) / dot(-n, (p2 - p1));
-	float t_out = min(t1, t2);
+	float t_out = std::min(t1, t2);
 	printf("Time of impact: %f\n", t_out);
 	printf("p2 -p1: %f\n", normalize(p2 - p1));
 	printf("p2: %f, %f\n", p1.x, p1.y);

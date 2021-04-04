@@ -13,19 +13,19 @@ App::App()
 
     manager.Init();
     
-    manager.RegisterComponents<Gravity, Transform2D, RigidBodyState, Line, Color, CollisionState, Circle, Polygon>();
+    manager.RegisterComponents<Gravity, Transform2D, RigidBodyState, Line, Color, CollisionState, Circle, Triangle>();
    
     physicssystem = manager.RegisterSystem<PhysicsSystem>();
     rendersystem = manager.RegisterSystem<RenderSystem>();
     collisionsystem = manager.RegisterSystem<CollisionSystem>();
     applyforceSystem = manager.RegisterSystem<ApplyForces>();
 
-    manager.SetSystemSignature<PhysicsSystem, Gravity, Transform2D, RigidBodyState, Polygon>();
-    manager.SetSystemSignature<RenderSystem, Transform2D, Polygon, Color>();
+    manager.SetSystemSignature<PhysicsSystem, Gravity, Transform2D, RigidBodyState, Triangle>();
+    manager.SetSystemSignature<RenderSystem, Transform2D, Triangle, Color>();
     manager.SetSystemSignature<RenderSystem, Line>();
 
     manager.SetSystemSignature<CollisionSystem, Transform2D>();
-    manager.SetSystemSignature<ApplyForces, Transform2D, RigidBodyState, Polygon>();
+    manager.SetSystemSignature<ApplyForces, Transform2D, RigidBodyState, Triangle>();
 
     const int numCircles = 4;
     const int screenHeight = 1080;
@@ -49,7 +49,7 @@ App::App()
 
     manager.RemoveComponent<Gravity>(triangle2);
     
-    //manager.AddComponent<Polygon<3>>(triangle, testTriangle);
+    //manager.AddComponent<Triangle<3>>(triangle, testTriangle);
 
     // create line at the Edges of the screen
     eID aLine = manager.CreateEntity();
@@ -100,7 +100,7 @@ void App::Run()
             }
             if (event.key.code == sf::Keyboard::F && event.key.control)
             {
-                manager.Serialize("test.txt");
+                manager.Serialize<Gravity, Transform2D, RigidBodyState, Line, Color, CollisionState, Circle, Triangle>("test.txt");
             }
         }
 

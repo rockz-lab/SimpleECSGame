@@ -87,30 +87,29 @@ eID MakePolys::MakeTriangle(std::array<glm::vec2, 3> const& points, glm::vec2 ce
 	using std::pair;
 	eID entity = m_manager->CreateEntity();
 
-	Polygon polygon;
+	Triangle triangle;
 
-	std::vector<glm::vec2> v(points.begin(), points.end());
-	polygon.poly.vertices = v;
+	triangle.vertexData.vertices = points;
 
 	// translation of the triangle center
 	glm::vec2 center = 1.0f / 3.0f * (points[0] + points[1] + points[2]);
-	for (auto& v : polygon.poly.vertices)
+	for (auto& v : triangle.vertexData.vertices)
 		v -= center;
 
-	auto& indices = polygon.poly.indices;
-	indices = { pair<int, int>(0, 1), pair<int, int>(1, 2), pair<int, int>(2, 0) };
+	auto indices = { pair<int, int>(0, 1), pair<int, int>(1, 2), pair<int, int>(2, 0) };
 
-	std::vector<glm::vec2> n;
+	std::array<glm::vec2, 3> n;
+	int i = 0;
 	for (auto const& lineIndices : indices)
 	{
 		glm::vec2& lineDir = points[lineIndices.second] - points[lineIndices.first];
 		glm::vec2 normal = glm::normalize(glm::vec2{ -lineDir.y, lineDir.x });
-		n.push_back(normal);
+		n[i] = normal;
+		i++;
 	}
-	polygon.poly.normals = n;
-	polygon.numVerts = 3;
+	triangle.vertexData.normals = n;
 
-	m_manager->AddComponent(entity, polygon);
+	m_manager->AddComponent(entity, triangle);
 
 	Color defaultColor;
 	defaultColor.r = 128;

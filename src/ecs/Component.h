@@ -29,6 +29,11 @@ template <typename T>
 struct Component : public BaseComponent
 {
 	static const CompType ID;
+
+	void serialize_impl(std::ostream& os)
+	{
+		static_cast<T*>(this)->serialize_impl(os);
+	}
 };
 
 // ID definition -> auto increment, so that each Component Type has it's unique ID

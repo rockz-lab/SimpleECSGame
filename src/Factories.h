@@ -12,7 +12,7 @@ class MakeCircles
 public:
 	MakeCircles(ECSManager* manager);
 	
-	eID MakeCircle(float radius, glm::vec<3, uint8_t> color, glm::vec2 startPos);
+	eID MakeCircle(float radius, glm::vec<3, uint8_t> color, vec2 startPos);
 
 	eID MakeRandomCircle();
 	glm::vec<3, uint8_t> defaultColor;

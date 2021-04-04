@@ -25,12 +25,12 @@ void ApplyForces::Update(float dT)
 				// check, if our triangle containes the current mouse positions
 				const auto& poly = manager.GetComponent<Triangle>(entity);
 
-				auto poly_world = poly;
+				auto poly_world = poly.vertexData;
 
 				for (auto& v : poly_world.vertices)
-					v = glm::rotate(v.to_glm(), transform.rotation) + transform.pos;
+					v = glm::rotate(v, transform.rotation) + transform.pos.to_glm();
 				for (auto& n : poly_world.normals)
-					n = glm::rotate(n.to_glm(), transform.rotation);
+					n = glm::rotate(n, transform.rotation);
 
 				if (coll::pointInPoly(mousePos, poly_world))
 				{
@@ -52,7 +52,7 @@ void ApplyForces::Update(float dT)
 			glm::vec2 mousePos = { sf::Mouse::getPosition().x, sf::Mouse::getPosition().y };
 
 
-			glm::vec2 grabPointWorld = glm::rotate(grabPointLocal, transform.rotation) + transform.pos;
+			glm::vec2 grabPointWorld = glm::rotate(grabPointLocal, transform.rotation) + transform.pos.to_glm();
 			glm::vec2 elongation = (mousePos - grabPointWorld);
 
 			if (startedDrag)
@@ -63,7 +63,7 @@ void ApplyForces::Update(float dT)
 			if (glm::length(force) < 0.0f)
 				force = {};
 
-			glm::vec2 centerPos = transform.pos;
+			glm::vec2 centerPos = transform.pos.to_glm();
 			glm::vec2 lever = grabPointWorld - centerPos;
 			float torque = glm::dot({ -lever.y, lever.x }, force);
 

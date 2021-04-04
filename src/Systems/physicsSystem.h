@@ -81,11 +81,11 @@ public:
 						auto& transform_s = manager.GetComponent<Transform2D>(e_source);
 						auto& transform_t = manager.GetComponent<Transform2D>(e_target);
 
-						coll::transformPolygon(transform_s.rotation, transform_s.pos, poly_s);
-						coll::transformPolygon(transform_t.rotation, transform_t.pos, poly_t);
+						coll::transformPolygon(transform_s.rotation, transform_s.pos, poly_s.vertexData);
+						coll::transformPolygon(transform_t.rotation, transform_t.pos, poly_t.vertexData);
 
 						//coll::collisionData data{};
-						if (coll::convexPolyCollision(poly_s.poly, poly_t.poly, data))
+						if (coll::convexPolyCollision(poly_s.vertexData, poly_t.vertexData))
 						{
 							// detect change of collision state:
 							if ((manager.GetComponent<CollisionState>(e_target).status == false) ||
