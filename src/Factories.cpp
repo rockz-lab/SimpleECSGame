@@ -82,6 +82,34 @@ MakePolys::MakePolys(ECSManager* manager)
 	m_manager = manager;
 }
 
+float MakePolys::GetAngularMoment(const Triangle& tri)
+{
+	const auto& points = tri.vertexData.vertices;
+
+	vec2 baseDir = points[1] - points[0];
+	vec2 normal = normalize(vec2(baseDir.y, -baseDir.x));
+
+	float base = distance(points[1], points[0]);
+	float height = dot(normal, points[2] - points[1]);
+
+	//vec2 centroid = 1 / 3.0f * (points[0] + points[1] + points[2]);
+
+	float a = -dot(normalize(baseDir), (points[2] - points[1]));
+	//return (height*pow(base, 3) - height*pow(base, 2)*a + height*pow(a, 2)*base + base*pow(height, 3)) / 36.0f;
+	return (base * base - base * a + a * a + height * height) / 18.0f;
+}
+
+float MakePolys::GetMass(const Triangle& tri, float density)
+{
+	const auto& points = tri.vertexData.vertices;
+
+	vec2 baseDir = points[1] - points[0];
+	vec2 normal = normalize(vec2(baseDir.y, -baseDir.x));
+
+	float base = distance(points[1], points[0]);
+	float height = dot(normal, points[2] - points[1]);
+	return base * height / 2.0f * density;
+}
 eID MakePolys::MakeTriangle(std::array<glm::vec2, 3> const& points, glm::vec2 centerPos)
 {
 	using std::pair;
@@ -127,8 +155,9 @@ eID MakePolys::MakeTriangle(std::array<glm::vec2, 3> const& points, glm::vec2 ce
 	// add rigid body Physics:
 
 	RigidBodyState physics;
-	physics.angMass = 20000.0f;
-	physics.mass = 10;
+	float density = 0.001f;
+	physics.mass = GetMass(triangle, density);
+	physics.angMass = GetAngularMoment(triangle)*physics.mass;
 	physics.angMomentum = 0;
 	physics.centerPos = center;
 	physics.torque = 0;

@@ -15,8 +15,9 @@ public:
 
 	void Update(float dT);
 private:
-	float strength = 50.0f;
-	float d = 2.0f;
+	float strength = 10.0f;
+	float d = 4.0f;
+	float base_elongation = 100.0f;
 	eID selectedEntity{};
 
 

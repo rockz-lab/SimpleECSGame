@@ -43,7 +43,7 @@ public:
 
 				sf::Transform transformSFML;
 				transformSFML.translate({ transform.pos.x, transform.pos.y });
-				transformSFML.rotate(transform.rotation * 180 / glm::pi<float>());
+				transformSFML.rotate(transform.rotation * 180.0f / glm::pi<float>());
 
 				win->draw(vertArr, transformSFML);
 			}

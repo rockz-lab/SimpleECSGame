@@ -57,10 +57,16 @@ void ApplyForces::Update(float dT)
 
 			if (startedDrag)
 				elongation_o = elongation;
-
-			glm::vec2 velocity = (elongation - elongation_o) / dT;
-			glm::vec2 force = elongation * strength + d * velocity;
-			if (glm::length(force) < 0.0f)
+			
+			glm::vec2 force;
+			if (glm::length(elongation) > base_elongation)
+			{
+				glm::vec2 velocity = (elongation - elongation_o) / dT;
+				glm::vec2 effective_elongation = elongation - glm::normalize(elongation) * base_elongation;
+				force = effective_elongation * strength + d * velocity;
+				if (glm::dot(force, velocity) < 0)
+					force = {};
+			} else
 				force = {};
 
 			glm::vec2 centerPos = transform.pos.to_glm();

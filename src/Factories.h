@@ -33,8 +33,12 @@ class MakePolys
 public:
 	MakePolys(ECSManager* manager);
 
+
+
 	eID MakeTriangle(std::array<glm::vec2, 3> const& points, glm::vec2 centerPos);
 private:
+	float GetMass(const Triangle& tri, float density);
+	float GetAngularMoment(const Triangle& tri);
 	
 	ECSManager* m_manager;
 };
