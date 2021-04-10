@@ -28,13 +28,13 @@ find_package(nlohmann_json CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
 
-#add_executable(game ${sourcefiles})
+add_executable(game ${sourcefiles})
 add_executable(tests ${PROJECT_SOURCE_DIR}/src/Tests/test_serialization.cpp
  ${PROJECT_SOURCE_DIR}/src/ECS/ECS.cpp)
 
-#target_include_directories(game PUBLIC ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(game PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(tests PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
-#target_link_libraries(game PRIVATE glm sfml-graphics sfml-audio Eigen3::Eigen nlohmann_json nlohmann_json::nlohmann_json)
+target_link_libraries(game PRIVATE glm sfml-graphics sfml-audio Eigen3::Eigen nlohmann_json nlohmann_json::nlohmann_json)
 target_link_libraries(tests PRIVATE glm sfml-graphics sfml-audio Eigen3::Eigen nlohmann_json nlohmann_json::nlohmann_json)
 

@@ -28,11 +28,11 @@ void ApplyForces::Update(float dT)
 				auto poly_world = poly.vertexData;
 
 				for (auto& v : poly_world.vertices)
-					v = glm::rotate(v, transform.rotation) + transform.pos.to_glm();
+					v = vec2(glm::rotate(v.to_glm(), transform.rotation)) + transform.pos;
 				for (auto& n : poly_world.normals)
-					n = glm::rotate(n, transform.rotation);
+					n = vec2(glm::rotate(n.to_glm(), transform.rotation));
 
-				if (coll::pointInPoly(mousePos, poly_world))
+				if (pointInPoly(mousePos, poly_world))
 				{
 					// get the local position on the triangle by undoing the transform
 					grabPointLocal = glm::rotate((mousePos - transform.pos).to_glm(), -transform.rotation);

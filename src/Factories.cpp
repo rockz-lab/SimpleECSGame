@@ -89,7 +89,7 @@ float MakePolys::GetAngularMoment(const Triangle& tri)
 	vec2 baseDir = points[1] - points[0];
 	vec2 normal = normalize(vec2(baseDir.y, -baseDir.x));
 
-	float base = distance(points[1], points[0]);
+	float base = glm::distance(points[1].to_glm(), points[0].to_glm());
 	float height = dot(normal, points[2] - points[1]);
 
 	//vec2 centroid = 1 / 3.0f * (points[0] + points[1] + points[2]);
@@ -106,11 +106,11 @@ float MakePolys::GetMass(const Triangle& tri, float density)
 	vec2 baseDir = points[1] - points[0];
 	vec2 normal = normalize(vec2(baseDir.y, -baseDir.x));
 
-	float base = distance(points[1], points[0]);
+	float base = distance(points[1].to_glm(), points[0].to_glm());
 	float height = dot(normal, points[2] - points[1]);
 	return base * height / 2.0f * density;
 }
-eID MakePolys::MakeTriangle(std::array<glm::vec2, 3> const& points, glm::vec2 centerPos)
+eID MakePolys::MakeTriangle(std::array<vec2, 3> const& points, vec2 centerPos)
 {
 	using std::pair;
 	eID entity = m_manager->CreateEntity();
@@ -120,18 +120,18 @@ eID MakePolys::MakeTriangle(std::array<glm::vec2, 3> const& points, glm::vec2 ce
 	triangle.vertexData.vertices = points;
 
 	// translation of the triangle center
-	glm::vec2 center = 1.0f / 3.0f * (points[0] + points[1] + points[2]);
+	vec2 center = (points[0] + points[1] + points[2]) * 1.0f / 3.0f;
 	for (auto& v : triangle.vertexData.vertices)
 		v -= center;
 
 	auto indices = { pair<int, int>(0, 1), pair<int, int>(1, 2), pair<int, int>(2, 0) };
 
-	std::array<glm::vec2, 3> n;
+	std::array<vec2, 3> n;
 	int i = 0;
 	for (auto const& lineIndices : indices)
 	{
-		glm::vec2& lineDir = points[lineIndices.second] - points[lineIndices.first];
-		glm::vec2 normal = glm::normalize(glm::vec2{ -lineDir.y, lineDir.x });
+		vec2& lineDir = points[lineIndices.second] - points[lineIndices.first];
+		vec2 normal = normalize(glm::vec2{ -lineDir.y, lineDir.x });
 		n[i] = normal;
 		i++;
 	}

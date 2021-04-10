@@ -59,6 +59,12 @@ public:
 	template <typename ...CompTypes>
 	void Deserialize(const std::string& fileName)
 	{
+		// make sure all existing entities are deleted:
+
+		auto allEntities = m_entityManager->GetActiveEntities();
+		for (auto& e : allEntities)
+			manager.DestroyEntity(e);
+
 		// parse the Entities:
 		
 		std::ifstream file(fileName);
@@ -70,26 +76,24 @@ public:
 		for (auto& entityJson : inputJson)
 		{
 			current_entity = entityJson["ID"];
-			
-			DeserializeComponents<CompTypes...>(current_entity, entityJson["Components"]);
-		}
-		/*switch (reader.GetLineState())
-			{
-			case Reader::LineState::EntityID:
-				current_entity = reader.getEntityID();
-				reader.NextLine();
-				break;
-			case Reader::LineState::CompData:
-				assert(current_entity != InvalidIndex);
-				DeserializeComponents<CompTypes...>(current_entity, reader);
-				break;
-			}*/
 		
+			std::cout << current_entity << "\n";
+
+			manager.CreateEntity(current_entity);
+
+			for (auto& compJson : entityJson["Components"])
+				DeserializeComponents<CompTypes...>(current_entity, compJson);
+		}
 	}
 		
 	eID CreateEntity()
 	{
 		return m_entityManager->CreateEntity();
+	}
+
+	void CreateEntity(eID entity)
+	{
+		return m_entityManager->CreateEntity(entity);
 	}
 
     void DestroyEntity(eID entity)
@@ -256,14 +260,12 @@ private:
 	template <typename Comp>
 	void DeserializeComponent(eID entity, json& compJson)
 	{
-		for (auto& comp : compJson)
+		CompType ID = compJson["type"];
+		if (Comp::ID == ID)
 		{
-			CompType ID = comp["type"];
-			if (Comp::ID == ID)
-			{
-				Comp newComponent = comp["data"];
-				manager.AddComponent<Comp>(entity, newComponent);
-			}
+			Comp newComponent = compJson["data"];
+			manager.AddComponent<Comp>(entity, newComponent);
+
 		}
 	}
 

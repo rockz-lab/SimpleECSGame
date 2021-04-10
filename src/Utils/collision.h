@@ -7,9 +7,11 @@
 
 #include "ecs/ecsTypes.h"
 #include "math.h"
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
 
-namespace coll
-{
+//namespace coll
+//{
 	namespace internal
 	{
 		template <typename T>
@@ -133,18 +135,18 @@ namespace coll
 	template <int N>
 	struct Static_Poly
 	{
-		std::array<glm::vec2, N> vertices;
-		std::array<glm::vec2, N> normals;
+		std::array<vec2, N> vertices;
+		std::array<vec2, N> normals;
 	};
 	
 	template <int N>
 	inline void transformPolygon(float rotation, const vec2 &translation, Static_Poly<N> &poly)
 	{
 		for (auto& n : poly.normals)
-			n = glm::rotate(n, rotation);
+			n = vec2(glm::rotate(n.to_glm(), rotation));
 
 		for (auto& v : poly.vertices)
-			v = glm::rotate(v, rotation) + translation.to_glm();
+			v = vec2(glm::rotate(v.to_glm(), rotation) + translation.to_glm());
 	}
 
 	struct collisionData
@@ -173,13 +175,13 @@ namespace coll
 		while (it_normalsB != normalsB.end())
 		{
 			// because we want to loop over the combined arrays of normals from both polygons
-			glm::vec2 separating_axis = it_normalsA != normalsA.end() ? *it_normalsA : *it_normalsB;
+			vec2 separating_axis = it_normalsA != normalsA.end() ? *it_normalsA : *it_normalsB;
 
 			float minA = INFINITY;
 			float maxA = -INFINITY;
 			for (auto& vertex : polyA.vertices)
 			{
-				float projection = glm::dot(separating_axis, vertex);
+				float projection = dot(separating_axis, vertex);
 
 				// minimum
 				if (projection > maxA)
@@ -193,7 +195,7 @@ namespace coll
 			float maxB = -INFINITY;
 			for (auto& vertex : polyB.vertices)
 			{
-				float projection = glm::dot(separating_axis, vertex);
+				float projection = dot(separating_axis, vertex);
 
 				// minimum
 				if (projection > maxB)
@@ -241,7 +243,7 @@ namespace coll
 	}
 
 	
-	inline bool pointInPoly(const glm::vec2 &point, const coll::Static_Poly<3> &polygon)
+	inline bool pointInPoly(const vec2 &point, const Static_Poly<3> &polygon)
 	{
 		bool isInside = true;
 		// traverse all the  edges
@@ -250,10 +252,10 @@ namespace coll
 			auto first = polygon.vertices[i];
 			auto second = polygon.vertices[(i+1)%3];
 
-			glm::vec2 normal = polygon.normals[i];
+			vec2 normal = polygon.normals[i];
 			// check, if point is in positive normal directions
 
-			float checkVal = glm::dot(normal, point - first);
+			float checkVal = dot(normal, point - first);
 
 			isInside = isInside && (checkVal < 0);
 		}
@@ -264,4 +266,4 @@ namespace coll
 
 // 
 
-}
+//}

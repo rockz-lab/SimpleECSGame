@@ -4,7 +4,7 @@
 
 #include "ECS/ECS.h"
 
-#include "Components/gameComponents.h"
+//#include "Components/gameComponents.h"
 #include "Systems/physicsSystem.h"
 #include "Systems/renderSystem.h"
 
@@ -18,6 +18,8 @@ public:
 	void Run();
 
 private:
+	bool debug_not_called = true;
+
 	std::shared_ptr<sf::RenderWindow> m_window;
 
 	std::shared_ptr<RenderSystem> rendersystem;

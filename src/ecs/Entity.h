@@ -28,6 +28,11 @@ public:
 		return entity;
 	}
 
+	void CreateEntity(eID entity)
+	{
+		m_activeEntities.set(entity);
+	}
+
 	void DestroyEntity(eID entity)
 	{
 		m_availableIDs.push_back(entity); // so you can later resuse IDs that have been deleted

@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string_view>
 
+#include <array>
+
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
@@ -87,6 +89,73 @@ inline void from_json(const json& j, RigidBodyState& obj) {
 	FROM_FIELD(torque);
 }
 
+inline void to_json(json& j, const Color& obj)
+{
+	FIELDS(
+		TO_FIELD(r),
+		TO_FIELD(g),
+		TO_FIELD(b)
+		);
+}
+inline void from_json(const json& j, Color& obj) {
+	FROM_FIELD(r);
+	FROM_FIELD(g);
+	FROM_FIELD(b);
+}
+
+inline void to_json(json& j, Line& obj)
+{
+	FIELDS(
+		TO_FIELD(p1),
+		TO_FIELD(p2)
+	);
+}
+inline void from_json(const json& j, Line& obj) {
+	FROM_FIELD(p1);
+	FROM_FIELD(p2);
+}
+
+template <int N>
+inline void to_json(json& j, const Static_Poly<N>& obj)
+{
+	FIELDS(
+		TO_FIELD(normals),
+		TO_FIELD(vertices)
+	);
+}
+
+template <int N>
+inline void from_json(const json& j, Static_Poly<N>& obj)
+{
+	FROM_FIELD(normals);
+	FROM_FIELD(vertices);
+}
+
+
+template <int N>
+inline void to_json(json& j, const Polygon<N>& obj)
+{
+	FIELDS(
+		TO_FIELD(vertexData)
+	);
+}
+
+
+template <int N>
+inline void from_json(const json& j, Polygon<N>& obj)
+{
+	FROM_FIELD(vertexData);
+}
+
+inline void to_json(json& j, const CollisionState& obj)
+{
+	FIELDS(
+		TO_FIELD(status)
+		);
+}
+inline void from_json(const json& j, CollisionState& obj) {
+	FROM_FIELD(status);
+}
 //
 //class Reader
 //{

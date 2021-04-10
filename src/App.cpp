@@ -30,7 +30,9 @@ App::App()
     const int numCircles = 4;
     const int screenHeight = 1080;
     const int screenWidth = 1920;
-    
+
+   
+
     MakeCircles circleFactory(&manager);
     circleFactory.g = 10;
 
@@ -43,7 +45,7 @@ App::App()
     }
 
     MakePolys triangleFactory(&manager);
-    std::array<glm::vec2, 3> triVertices = { glm::vec2{0.0, 0.0}, glm::vec2{ -100.0, 0.0 }, glm::vec2{ -50.0, 200.0} };
+    std::array<vec2, 3> triVertices = { vec2{0.0, 0.0}, vec2{ -100.0, 0.0 }, vec2{ -50.0, 200.0} };
     auto triangle1 = triangleFactory.MakeTriangle(triVertices, { 1000, 100});
     auto triangle2 = triangleFactory.MakeTriangle(triVertices, { 950, 100 });
 
@@ -69,10 +71,15 @@ App::App()
 
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
+    
 
     m_window = std::make_shared<sf::RenderWindow>(sf::VideoMode((unsigned int)screenWidth, (unsigned int)screenHeight),
-        "CausalGame",
-        sf::Style::Fullscreen, settings);
+        "CausalGame", sf::Style::Resize,
+        settings);
+
+    m_window->setKeyRepeatEnabled(false);
+
+        //sf::Style::Fullscreen, settings);
 
     m_window->setVerticalSyncEnabled(true);
 
@@ -98,10 +105,25 @@ void App::Run()
             {
                 m_window->close();
             }
-            if (event.key.code == sf::Keyboard::F && event.key.control)
+
+            // save game state ctrl - s
+            if (event.key.code == sf::Keyboard::S && event.key.control)
             {
-                manager.Serialize<Gravity, Transform2D, RigidBodyState, Line, Color, CollisionState, Circle, Triangle>("test.txt");
+                std::cout << "saving" << "\n";
+                manager.Serialize<Gravity, Transform2D, RigidBodyState, Line, Color, CollisionState, Circle, Triangle>("test.json");
+                std::cout << "saved" << "\n";
             }
+
+            // load game state ctrl - o
+            if (event.type == sf::Event::KeyPressed)
+                if (event.key.code == sf::Keyboard::O && event.key.control)
+                {
+                    std::cout << "loading test.json" << "\n";
+                    manager.Deserialize<Gravity, Transform2D, RigidBodyState, Line, Color, CollisionState, Circle, Triangle>("test.json");
+
+                    std::cout << "finished load" << "\n";
+                    break;
+                }
         }
 
         auto t1 = std::chrono::system_clock::now();
@@ -116,6 +138,6 @@ void App::Run()
 
         rendersystem->Update(dT);
         m_window->display();
-        printf("FPS: %f\n", 1.0f / dT);
+        //printf("FPS: %f\n", 1.0f / dT);
     }
 }

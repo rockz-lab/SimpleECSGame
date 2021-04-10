@@ -2,6 +2,8 @@
 #include <random>
 
 #include "ecs/ecs.h"
+
+#include "Utils/math.h"
 #include "Components/gameComponents.h"
 #include "glm/glm.hpp"
 
@@ -35,7 +37,7 @@ public:
 
 
 
-	eID MakeTriangle(std::array<glm::vec2, 3> const& points, glm::vec2 centerPos);
+	eID MakeTriangle(std::array<vec2, 3> const& points, vec2 centerPos);
 private:
 	float GetMass(const Triangle& tri, float density);
 	float GetAngularMoment(const Triangle& tri);

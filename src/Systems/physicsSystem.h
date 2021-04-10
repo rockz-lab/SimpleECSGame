@@ -24,7 +24,6 @@ public:
 			auto& state = manager.GetComponent<RigidBodyState>(entity);
 
 			// apply Gravity and other constant forces/torques
-			printf("%f\n", state.force.y);
 			state.force += glm::vec2(0, grav.g * state.mass);
 
 			state.centerPos_o =		state.centerPos;
@@ -81,11 +80,11 @@ public:
 						auto& transform_s = manager.GetComponent<Transform2D>(e_source);
 						auto& transform_t = manager.GetComponent<Transform2D>(e_target);
 
-						coll::transformPolygon(transform_s.rotation, transform_s.pos, poly_s.vertexData);
-						coll::transformPolygon(transform_t.rotation, transform_t.pos, poly_t.vertexData);
+						transformPolygon(transform_s.rotation, transform_s.pos, poly_s.vertexData);
+						transformPolygon(transform_t.rotation, transform_t.pos, poly_t.vertexData);
 
 						//coll::collisionData data{};
-						if (coll::convexPolyCollision(poly_s.vertexData, poly_t.vertexData))
+						if (convexPolyCollision(poly_s.vertexData, poly_t.vertexData))
 						{
 							// detect change of collision state:
 							if ((manager.GetComponent<CollisionState>(e_target).status == false) ||

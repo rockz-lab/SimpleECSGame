@@ -46,7 +46,7 @@ struct ConstraintData
 
 
 
-inline ContactManifold makeContactManifold(const coll::PolygonData &ref, const coll::PolygonData &incident, int collisionFaceIndex)
+inline ContactManifold makeContactManifold(const PolygonData &ref, const PolygonData &incident, int collisionFaceIndex)
 {
 	// identify the collision faces
 	extern ECSManager manager;

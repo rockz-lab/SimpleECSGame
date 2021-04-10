@@ -2,6 +2,10 @@
 #include <glm/glm.hpp>
 
 #include <iostream>
+
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
+
 // Serializable interface
 
 //class ISerializable

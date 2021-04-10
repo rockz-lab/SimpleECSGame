@@ -10,7 +10,7 @@
 //#include <nlohmann/json.hpp>
 //using json = nlohmann::json;
 
-#include "Utils/Serialization.h"
+//#include "Utils/Serialization.h"
 
 struct Transform2D : public Component<Transform2D>
 {
@@ -73,7 +73,7 @@ struct Line : public Component<Line>
 template <int N>
 struct Polygon : public Component<Polygon<N>>
 {
-	coll::Static_Poly<N> vertexData;
+	Static_Poly<N> vertexData;
 };
 
 using Triangle = Polygon<3>;
