@@ -46,8 +46,6 @@ struct RigidBodyState : public Component<RigidBodyState>
 
 	vec2 force = {};
 	float torque = 0;
-
-	
 };
 
 

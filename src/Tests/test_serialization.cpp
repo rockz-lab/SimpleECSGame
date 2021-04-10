@@ -38,12 +38,15 @@ int main()
 		Circle bigCircle;
 		bigCircle.radius = 60;
 
+		RigidBodyState state;
 
-		manager.RegisterComponents<Gravity, Circle, Transform2D>();
+
+		manager.RegisterComponents<Gravity, Circle, Transform2D, RigidBodyState>();
 
 		manager.AddComponent(entityOne, gravity);
 		manager.AddComponent(entityOne, smallCircle);
 		manager.AddComponent(entityOne, tform);
+		manager.AddComponent(entityOne, state);
 
 		manager.AddComponent(entityTwo, bigCircle);
 		manager.AddComponent(entityTwo, tform);
@@ -54,7 +57,7 @@ int main()
 
 	}
 
-	manager.Serialize<Gravity, Circle, Transform2D>("test.txt");
+	manager.Serialize<Gravity, Circle, Transform2D, RigidBodyState>("test.json");
 
 	manager.DestroyEntity(entityOne);
 	manager.DestroyEntity(entityThree);
@@ -74,7 +77,7 @@ int main()
 	//manager.AddComponent(newOtherTest, tform);
 
 
-	manager.Deserialize<Gravity, Circle, Transform2D>("test.txt");
+	manager.Deserialize<Gravity, Circle, Transform2D, RigidBodyState>("test.json");
 	
 	
 	auto& circleHandle = manager.GetComponent<Circle>(1);
@@ -86,6 +89,10 @@ int main()
 	auto& handle = manager.GetComponent<Transform2D>(1);
 	std::cout << "pos:\n";
 	std::cout << handle.pos * 2 << "\n";
+
+	auto& handle2 = manager.GetComponent<RigidBodyState>(0);
+	std::cout << "centerPos_o:\n";
+	std::cout << handle2.centerPos_o << "\n";
 
 	//std::ofstream fs;
 	////fs.exceptions(std::ostream::badbit || std::ostream::failbit);
