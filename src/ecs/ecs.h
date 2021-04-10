@@ -6,6 +6,10 @@
 #include "System.h"
 
 #include <fstream>
+
+//#include "nlohmann/json.hpp"
+//using json = nlohmann::json;
+
 #include "Utils/Serialization.h"
 
 class ECSManager
@@ -24,8 +28,8 @@ public:
 	template <typename ... CompTypes>
 	void Serialize(const std::string& fileName)
 	{
-		std::ofstream file;
-		file.open(fileName);
+
+		json outJson;
 
 		auto allEntities = m_entityManager->GetActiveEntities();
 
@@ -33,13 +37,23 @@ public:
 		{
 			m_numSerializedCompTypes = 0;
 
-			file << "Entity ID: ";
-			file << entity << "\n";
+			json entityJson;
+			entityJson["ID"] = entity;
+
+			//file << "Entity ID: ";
+			//file << entity << "\n";
 			
-			SerializeComponents<CompTypes...>(entity, file);
+			json componentsJson;
+			SerializeComponents<CompTypes...>(entity, componentsJson);
+			entityJson["Components"] = componentsJson;
+			outJson.push_back(entityJson);
 		}
 		
 		assert(m_compManager->GetNumCompArrays() == m_numSerializedCompTypes && "Please check if all the types in Serialize match the registered types!");
+		std::ofstream file;
+		file.open(fileName);
+
+		file << outJson.dump(4);
 	}
 	
 	template <typename ...CompTypes>
@@ -47,12 +61,19 @@ public:
 	{
 		// parse the Entities:
 		
-		Reader reader(fileName);
-
+		std::ifstream file(fileName);
+		json inputJson;
+		file >> inputJson;
+		
 		eID current_entity = InvalidIndex;
-		while (!reader.IsDone())
+		
+		for (auto& entityJson : inputJson)
 		{
-			switch (reader.GetLineState())
+			current_entity = entityJson["ID"];
+			
+			DeserializeComponents<CompTypes...>(current_entity, entityJson["Components"]);
+		}
+		/*switch (reader.GetLineState())
 			{
 			case Reader::LineState::EntityID:
 				current_entity = reader.getEntityID();
@@ -62,8 +83,8 @@ public:
 				assert(current_entity != InvalidIndex);
 				DeserializeComponents<CompTypes...>(current_entity, reader);
 				break;
-			}
-		}
+			}*/
+		
 	}
 		
 	eID CreateEntity()
@@ -192,59 +213,56 @@ private:
 	}
 	
 	template <typename CompType>
-	void SerializeComponent(eID entity, std::ostream& stream)
+	void SerializeComponent(eID entity, json& componentsJson)
 	{
 		if (CheckCompType<CompType>(entity))
 		{
 			auto data = GetComponent<CompType>(entity);
-			data.serialize_impl(stream);
-			stream << "\n";
+			json newEntry;
+			newEntry["type"] = data.ID;
+			newEntry["data"] = data;
+			componentsJson.push_back(newEntry);
 		}
 		m_numSerializedCompTypes++;
 	}
 	
 	template <typename None = void, typename Comp, typename ...otherComps>
-	void SerializeComponents(eID entity, std::ostream& stream)
+	void SerializeComponents(eID entity, json& componentsJson)
 	{
-		SerializeComponent<Comp>(entity, stream);
-		SerializeComponents<None, otherComps...>(entity, stream);
+		SerializeComponent<Comp>(entity, componentsJson);
+		SerializeComponents<None, otherComps...>(entity, componentsJson);
 	}
 
 	template <typename Comp>
-	void SerializeComponents(eID entity, std::ostream& stream)
+	void SerializeComponents(eID entity, json& componentsJson)
 	{
-		SerializeComponent<Comp>(entity, stream);
+		SerializeComponent<Comp>(entity, componentsJson);
 	}
 	
 
 	template <typename None = void, typename Comp, typename ...otherComps>
-	void DeserializeComponents(eID entity, Reader& reader)
+	void DeserializeComponents(eID entity, json& compJson) 
 	{
-		DeserializeComponent<Comp>(entity, reader);
-		DeserializeComponents<None, otherComps...>(entity, reader);
+		DeserializeComponent<Comp>(entity, compJson);
+		DeserializeComponents<None, otherComps...>(entity, compJson);
 	}
 
 	template <typename Comp>
-	void DeserializeComponents(eID entity, Reader& reader)
+	void DeserializeComponents(eID entity, json& compJson)
 	{
-		DeserializeComponent<Comp>(entity, reader);
+		DeserializeComponent<Comp>(entity, compJson);
 	}
 
 	template <typename Comp>
-	void DeserializeComponent(eID entity, Reader& reader)
+	void DeserializeComponent(eID entity, json& compJson)
 	{
-		if (!reader.IsDone())
+		for (auto& comp : compJson)
 		{
-			if (reader.GetLineState() == Reader::LineState::CompData)
+			CompType ID = comp["type"];
+			if (Comp::ID == ID)
 			{
-				CompType ID = reader.GetCompID();
-				if (Comp::ID == ID)
-				{
-					Comp newComponent;
-					newComponent.deserialize_impl(reader, ID);
-					manager.AddComponent<Comp>(entity, newComponent);
-					reader.NextLine();
-				}
+				Comp newComponent = comp["data"];
+				manager.AddComponent<Comp>(entity, newComponent);
 			}
 		}
 	}

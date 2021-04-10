@@ -1,7 +1,41 @@
 #pragma once
-#include "ECS/ecs.h"
 #include <iostream>
 #include <string_view>
+
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
+#include "Components/gameComponents.h"
+
+inline void to_json(json& j, const vec2& obj) {
+	j = json{ {"x", obj.x}, {"y", obj.y} };
+}
+inline void from_json(const json& j, vec2& obj) {
+	j.at("x").get_to(obj.x);
+	j.at("y").get_to(obj.y);
+}
+
+inline void to_json(json& j, const Transform2D& obj) {
+	j = json{ {"pos", obj.pos}, {"rotation", obj.rotation} };
+}
+inline void from_json(const json& j, Transform2D& obj) {
+	j.at("pos").get_to(obj.pos);
+	j.at("rotation").get_to(obj.rotation);
+}
+
+inline void to_json(json& j, const Gravity& obj) {
+	j = json{ {"g", obj.g} };
+}
+inline void from_json(const json& j, Gravity& obj) {
+	j.at("g").get_to(obj.g);
+}
+
+inline void to_json(json& j, const Circle& obj) {
+	j = json{ {"radius", obj.radius} };
+}
+inline void from_json(const json& j, Circle& obj) {
+	j.at("radius").get_to(obj.radius);
+}
 
 class Reader
 {

@@ -4,9 +4,8 @@
 
 #include "ECS/ECS.h"
 #include "utils/math.h"
-#include "Utils/serialization.h"
 
-#include "Components/gameComponents.h"
+//#include "Components/gameComponents.h"
 // initialize the counter
 CompType BaseComponent::m_counter = 0;
 
@@ -77,7 +76,7 @@ int main()
 
 	manager.Deserialize<Gravity, Circle, Transform2D>("test.txt");
 	
-
+	
 	auto& circleHandle = manager.GetComponent<Circle>(1);
 
 	circleHandle.radius += 2;
