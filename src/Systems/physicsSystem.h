@@ -4,7 +4,7 @@
 #include "Components/gameComponents.h"
 
 #include "Utils/Collision.h"
-#include "Collision/constraints.h"
+//#include "Collision/constraints.h"
 
 extern ECSManager manager;
 
