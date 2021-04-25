@@ -1,5 +1,7 @@
 #include "Factories.h"
 
+#include "ECS/ecs.h"
+
 MakeCircles::MakeCircles(ECSManager* manager)
 {
 
@@ -110,6 +112,7 @@ float MakePolys::GetMass(const Triangle& tri, float density)
 	float height = dot(normal, points[2] - points[1]);
 	return base * height / 2.0f * density;
 }
+
 eID MakePolys::MakeTriangle(std::array<vec2, 3> const& points, vec2 centerPos)
 {
 	using std::pair;
@@ -172,4 +175,54 @@ eID MakePolys::MakeTriangle(std::array<vec2, 3> const& points, vec2 centerPos)
 	m_manager->AddComponent(entity, collision);
 
 	return entity;
+}
+
+extern ECSManager manager;
+
+void Factory::makeSprite(eID entity, const std::array<vec2, 4>& quadVerts, const std::array<vec2, 4>& texCoords)
+{
+	vec2 center = vec2(0, 0);
+
+	for (const auto& v : quadVerts)
+		center += v;
+
+	center = center * 0.25f;
+
+	Quad quadComp;
+	TexCoords<4> texCoordsComp;
+
+	quadComp.vertexData.vertices = quadVerts;
+	for (auto& v : quadComp.vertexData.vertices)
+		v = v - center;
+
+	texCoordsComp.coords = texCoords;
+
+	manager.AddComponent<Quad>(entity, quadComp);
+	manager.AddComponent<TexCoords<4>>(entity, texCoordsComp);
+}
+
+void Factory::setSpriteICs(eID entity, const InitialPos& pos, const InitialMov& movement)
+{
+	RigidBodyState physicsState;
+	Transform2D transform;
+
+	transform.pos = pos.pos;
+	transform.rotation = pos.rotation;
+
+	physicsState.centerPos = pos.pos;
+	physicsState.centerPos_o = pos.pos;
+	physicsState.rotation = pos.rotation;
+	physicsState.rotation_o = pos.rotation;
+
+	
+	physicsState.force = vec2(0, 0);
+	physicsState.torque = 0;
+
+	physicsState.angMass = 1;
+	physicsState.mass = 1;
+	physicsState.angMomentum = 0;
+	physicsState.angMomentum_o = 0;
+	
+	manager.AddComponent<Transform2D>(entity, transform);
+	manager.AddComponent<RigidBodyState>(entity, physicsState);
 }

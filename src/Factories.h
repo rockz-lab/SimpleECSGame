@@ -35,8 +35,6 @@ class MakePolys
 public:
 	MakePolys(ECSManager* manager);
 
-
-
 	eID MakeTriangle(std::array<vec2, 3> const& points, vec2 centerPos);
 private:
 	float GetMass(const Triangle& tri, float density);
@@ -45,3 +43,24 @@ private:
 	ECSManager* m_manager;
 };
 
+
+// new style of factories 
+namespace Factory
+{
+	struct InitialMov
+	{
+		vec2 velocity;
+		float angularSpeed;
+	};
+
+	struct InitialPos
+	{
+		vec2 pos;
+		float rotation;
+	};
+
+	void makeSprite(eID entity, const std::array<vec2, 4>& quadVerts, const std::array<vec2, 4>& texCoords);
+
+	void setSpriteICs(eID entity, const InitialPos& pos, const InitialMov& movement);
+
+}

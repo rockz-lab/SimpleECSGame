@@ -22,7 +22,6 @@ struct Transform2D : public Component<Transform2D>
 struct Gravity : public Component<Gravity>
 {
 	float g = 9.81f;
-
 };
 
 struct Circle : public Component<Circle>
@@ -83,4 +82,16 @@ struct CollisionState : public Component<CollisionState>
 	bool status = false;
 };
 
+template <int N>
+struct TexCoords : public Component<TexCoords<N>>
+{
+	std::array<vec2, N> coords;
+};
 
+using Quad = Polygon<4>;
+
+#define STR_LEN 20
+struct SpriteName : public Component<SpriteName>
+{
+	char name[STR_LEN];
+};

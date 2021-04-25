@@ -24,7 +24,7 @@ public:
 			auto& state = manager.GetComponent<RigidBodyState>(entity);
 
 			// apply Gravity and other constant forces/torques
-			state.force += glm::vec2(0, grav.g * state.mass);
+			state.force += glm::vec2(0, -grav.g * state.mass);
 
 			state.centerPos_o =		state.centerPos;
 			state.angMomentum_o =	state.angMomentum;
@@ -156,7 +156,7 @@ public:
 		}
 	}
 private:
-	float elatsicity = 0.4;
+	float elatsicity = 0.4f;
 	void CollideCirles(eID source, eID target, float dT);
 
 	void collideCircleLine(glm::vec2& circle_pos, Line& line, Circle& circ, RigidBodyState& circle_mov, float dT, float g);

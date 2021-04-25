@@ -14,6 +14,10 @@ file( GLOB_RECURSE  sourcefiles ${PROJECT_SOURCE_DIR}/src/ECS/*.cpp
 							${PROJECT_SOURCE_DIR}/src/main.cpp
 							${PROJECT_SOURCE_DIR}/src/App.cpp
 							${PROJECT_SOURCE_DIR}/src/Factories.cpp
+							${PROJECT_SOURCE_DIR}/src/Renderer/*.cpp
+							${PROJECT_SOURCE_DIR}/src/Scene/*.cpp
+							${PROJECT_SOURCE_DIR}/src/Utils/*.cpp
+							${PROJECT_SOURCE_DIR}/src/Utils/*.c
 )
 #file( GLOB_RECURSE  sourcefiles ${PROJECT_SOURCE_DIR}/src/main.cpp
 #							${PROJECT_SOURCE_DIR}/src/ECS/ECS.cpp
@@ -27,6 +31,8 @@ find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(ZLIB REQUIRED)
 
 
 add_executable(game ${sourcefiles})
@@ -36,7 +42,9 @@ add_executable(tests ${PROJECT_SOURCE_DIR}/src/Tests/test_serialization.cpp
 target_include_directories(game PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(tests PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
-target_link_libraries(game PRIVATE glm GLEW::GLEW sfml-graphics sfml-audio nlohmann_json nlohmann_json::nlohmann_json)
+target_link_libraries(game PRIVATE glm GLEW::GLEW glfw nlohmann_json nlohmann_json::nlohmann_json ZLIB::ZLIB)
 target_link_libraries(tests PRIVATE glm GLEW::GLEW sfml-graphics sfml-audio nlohmann_json nlohmann_json::nlohmann_json)
 
+set_target_properties(game PROPERTIES CXX_STANDARD 17)
+set_target_properties(game PROPERTIES CXX_STANDARD_REQUIRED ON)
 target_compile_definitions(game PRIVATE "SOURCE_DIRECTORY=\"${CMAKE_SOURCE_DIR}\"")

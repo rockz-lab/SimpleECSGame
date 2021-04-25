@@ -11,6 +11,7 @@
 class System
 {
 public:
+	// needs some sort of name acess
 	std::vector<std::set<eID>> m_entitiyLists;
 };
 

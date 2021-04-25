@@ -6,12 +6,6 @@
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
-// Serializable interface
-
-//class ISerializable
-//{
-//
-//};
 struct vec2;
 float dot(const vec2& v1, const vec2& v2);
 vec2 normalize(const vec2& v);
@@ -28,7 +22,18 @@ struct vec2
 		m_vec = { x, y };
 	}
 
-	vec2(const glm::vec2& vec) : m_vec(vec) {};
+	vec2(const glm::vec2& vec) : m_vec(vec)
+	{
+		x = m_vec.x;
+		y = m_vec.y;
+	};
+
+	vec2(const vec2& vec)
+	{
+		this->m_vec = vec.m_vec;
+		x = m_vec.x;
+		y = m_vec.y;
+	};
 
 	float& x = m_vec.x;
 	float& y = m_vec.y;
@@ -120,3 +125,16 @@ private:
 	glm::vec2 m_vec{};
 };
 
+
+
+inline glm::mat3 makeRotation(float angle_rad)
+{
+	glm::mat3 rotation = glm::mat3();
+
+	rotation[0][0] = cos(angle_rad);
+	rotation[0][1] = -sin(angle_rad);
+	rotation[1][0] = sin(angle_rad);
+	rotation[1][1] = cos(angle_rad);
+	rotation[2][2] = 1;
+	return rotation;
+}

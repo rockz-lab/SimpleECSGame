@@ -6,8 +6,6 @@
 #include <memory>
 #include <typeinfo>
 
-#include "yaml-cpp/yaml.h"
-
 // Components derive from this class
 
 class BaseComponent

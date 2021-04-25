@@ -156,6 +156,19 @@ inline void to_json(json& j, const CollisionState& obj)
 inline void from_json(const json& j, CollisionState& obj) {
 	FROM_FIELD(status);
 }
+
+
+template <int N>
+inline void to_json(json& j, const TexCoords<N>& obj)
+{
+	FIELDS( TO_FIELD(coords) );
+}
+template <int N>
+inline void from_json(const json& j, TexCoords<N>& obj)
+{
+	FROM_FIELD(coords);
+}
+
 //
 //class Reader
 //{
