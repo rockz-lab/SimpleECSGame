@@ -25,7 +25,7 @@
 // TODO: expose the size
 FrameVertexBuffer::FrameVertexBuffer()
 {
-	m_VertexArray = std::make_unique<VertexArray<Vertex2D>>(4000, 6000);
+	m_VertexArray = std::make_unique<VertexArrayRing<Vertex2D>>(4000, 6000);
 }
 
 void FrameVertexBuffer::Submit()

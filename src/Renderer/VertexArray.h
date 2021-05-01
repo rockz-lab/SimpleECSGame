@@ -84,8 +84,6 @@ public:
 		GLsizei newVertexCount = m_sizeVerts + verts.size();
 		GLsizei newElementCount = m_sizeElts + indices.size();
 
-
-
 		assert(indices.size() % 3 == 0 && "Number of indcies must be divisible by 3, because triangle elements are used");
 
 		for (auto& ind : indices)
@@ -93,14 +91,16 @@ public:
 
 		assert(newVertexCount < m_capacityVerts && newElementCount < m_capacityElts);
 
-		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		glBufferSubData(GL_ARRAY_BUFFER, m_sizeVerts * sizeof(type), verts.size() * sizeof(type), verts.data());
-		//glBindBuffer(GL_ARRAY_BUFFER, 0);
+		WriteRangeVerts(m_sizeVerts, verts.size(), verts.data());
+		WriteRangeElts(m_sizeElts, indices.size(), indices.data());
+		//glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		//glBufferSubData(GL_ARRAY_BUFFER, m_sizeVerts * sizeof(type), verts.size() * sizeof(type), verts.data());
+		////glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, m_sizeElts * sizeof(unsigned int), indices.size() * sizeof(unsigned int), indices.data());
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+		//glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, m_sizeElts * sizeof(unsigned int), indices.size() * sizeof(unsigned int), indices.data());
 		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
+		
 		ElementBufferRange EBRange{ m_sizeElts, indices.size() };
 		m_sizeElts = newElementCount;
 		m_sizeVerts = newVertexCount;
@@ -116,7 +116,18 @@ public:
 		glBindVertexArray(0);
 	}
 
-private:
+protected:
+
+	void WriteRangeVerts(int start, int count, const type* data)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		glBufferSubData(GL_ARRAY_BUFFER, start * sizeof(type), count * sizeof(type), data);
+	}
+	void WriteRangeElts(int start, int count, const unsigned int* data)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, start * sizeof(unsigned int), count * sizeof(unsigned int), data);
+	}
 
 	GLsizei m_capacityVerts;
 	GLsizei m_capacityElts;
@@ -127,4 +138,50 @@ private:
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_ebo;
+};
+
+
+template <typename type>
+class VertexArrayRing : public VertexArray<type>
+{
+public:
+	VertexArrayRing(int maxVertexCount, int maxElementCount) : VertexArray<type>(maxVertexCount, maxElementCount) {};
+	
+	ElementBufferRange PushVertices(const std::vector<type>& verts, std::vector<unsigned int> indices)
+	{
+		assert(indices.size() % 3 == 0 && "Number of indcies must be divisible by 3, because triangle elements are used");
+
+		GLsizei newVertexCount = m_sizeVerts + verts.size();
+		GLsizei newElementCount = m_sizeElts + indices.size();
+
+		bool isVertexArrayFull = newVertexCount > m_capacityVerts;
+		bool isElementArrayFull = newElementCount > m_capacityElts;
+
+		if (isVertexArrayFull || isElementArrayFull)
+		{	// reset write locaton to start
+			m_sizeVerts = 0;
+			m_sizeElts = 0;
+
+			newVertexCount = verts.size();
+			newElementCount = indices.size();
+		}
+
+		for (auto& ind : indices)
+			ind += m_sizeVerts;
+
+		WriteRangeVerts(m_sizeVerts, verts.size(), verts.data());
+		WriteRangeElts(m_sizeElts, indices.size(), indices.data());
+		//glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		//glBufferSubData(GL_ARRAY_BUFFER, m_sizeVerts * sizeof(type), verts.size() * sizeof(type), verts.data());
+		////glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+		//glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, m_sizeElts * sizeof(unsigned int), indices.size() * sizeof(unsigned int), indices.data());
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		ElementBufferRange EBRange{ m_sizeElts, indices.size() };
+		m_sizeElts = newElementCount;
+		m_sizeVerts = newVertexCount;
+		return EBRange;
+	}
 };

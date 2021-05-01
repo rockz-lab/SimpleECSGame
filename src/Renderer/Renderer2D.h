@@ -42,7 +42,7 @@ public:
 private:
 
 	//void IndexedDraw()
-	std::unique_ptr<VertexArray<Vertex2D>> m_VertexArray;
+	std::unique_ptr<VertexArrayRing<Vertex2D>> m_VertexArray;
 
 	
 	std::vector<IndexedDrawInfo> m_drawinfo;
