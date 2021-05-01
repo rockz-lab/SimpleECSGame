@@ -48,10 +48,12 @@ Window::Window(int width, int height, const std::string& title)
 			exit(EXIT_FAILURE);
 	}
 	glfwSwapInterval(1);
-	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	if (_DEBUG)
 	{
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback(MessageCallback, 0);
 	}

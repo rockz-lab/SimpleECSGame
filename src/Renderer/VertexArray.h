@@ -101,7 +101,7 @@ public:
 		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, m_sizeElts * sizeof(unsigned int), indices.size() * sizeof(unsigned int), indices.data());
 		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		ElementBufferRange EBRange{ m_sizeElts / 3, indices.size() / 3 };
+		ElementBufferRange EBRange{ m_sizeElts, indices.size() };
 		m_sizeElts = newElementCount;
 		m_sizeVerts = newVertexCount;
 		return EBRange;

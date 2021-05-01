@@ -81,7 +81,7 @@ struct vec2
 		return result;
 	}
 
-	vec2 operator*(float scalar)
+	vec2 operator*(float scalar) const
 	{
 		vec2 result;
 		result.m_vec = (this->m_vec * scalar);

@@ -29,6 +29,6 @@ private:
 	std::shared_ptr<SpriteCreator> m_spriteCreator;
 	float m_frequency = 5;
 	float m_initialSpeed = 100;
-	std::chrono::steady_clock::time_point m_t_now;
+	std::chrono::steady_clock::time_point t_last;
 	float m_elapsedTime = 0.0f;
 };

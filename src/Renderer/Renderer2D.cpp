@@ -100,7 +100,7 @@ void Renderer2D::Draw(FrameVertexBuffer& vertexBuffer, const glm::mat3& cameraPr
 
 		const auto& range = drawInfo.indexRange;
 
-		glDrawElements(GL_TRIANGLES, range.size*3, GL_UNSIGNED_INT, (void*)range.offset);
+		glDrawElements(GL_TRIANGLES, range.size, GL_UNSIGNED_INT, (GLvoid*)(range.offset * sizeof(unsigned int)));
 	}
 
 	vertexBuffer.Unbind();

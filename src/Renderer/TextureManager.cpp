@@ -36,7 +36,7 @@ void TextureManager::CreateGLTexture()
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_texAtlas->width, m_texAtlas->height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, m_texAtlas->GetDataPointer());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_texAtlas->width, m_texAtlas->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_texAtlas->GetDataPointer());
 
 }
 
@@ -75,14 +75,14 @@ void TextureManager::LoadMetadata(const std::string filename)
 		coords[0].x = x / totalWidth;
 		coords[0].y = y / totalHeight;
 
-		coords[1].x = x / totalWidth;
-		coords[1].y = (y + h) / totalHeight;
+		coords[1].x = (x + w) / totalWidth;
+		coords[1].y = y / totalHeight;
 
 		coords[2].x = (x + w) / totalWidth;
 		coords[2].y = (y + h) / totalHeight;
 
-		coords[3].x = (x + w) / totalWidth;
-		coords[3].y = y / totalHeight;
+		coords[3].x = x / totalWidth;
+		coords[3].y = (y + h) / totalHeight;
 
 		
 		m_texMapping.insert({ spriteName, coords });

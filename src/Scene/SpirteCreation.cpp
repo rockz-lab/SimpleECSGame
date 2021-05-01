@@ -16,12 +16,13 @@ SpriteCreator::SpriteCreator(std::shared_ptr<TextureManager> textureManager)
 
 void SpriteCreator::SpawnSprite(const std::string& name, const Factory::InitialPos& pos, const Factory::InitialMov& mov)
 {
+	// control the size/aspect ratio of the sprite
 	eID entity = manager.CreateEntity();
 
 	std::array<vec2, 4> coords = m_textureManager->GetTexCoords(name);
 	
 	const int width = 50;
-	std::array<vec2, 4> verts = { vec2(-width/2, -width/2), vec2(-width/2, width/2), vec2(width/2, width/2), vec2(width/2, -width/2)};
+	std::array<vec2, 4> verts = { vec2(-width/2, width/2), vec2(width/2, width/2), vec2(width/2, -width/2), vec2(-width/2, -width/2)};
 	Factory::makeSprite(entity, verts, coords);
 	
 	Factory::setSpriteICs(entity, pos, mov);
@@ -45,7 +46,7 @@ RandomSpriteSource::RandomSpriteSource(std::shared_ptr<SpriteCreator> spriteCrea
 
 void RandomSpriteSource::TrySpawn(const vec2& position)
 {
-	// synchronously try to spawn sprites
+	// synchronously try to spawn sprites based on the absolute texture Coords
 	
 	if (m_elapsedTime > 1 / m_frequency)
 	{
@@ -54,13 +55,22 @@ void RandomSpriteSource::TrySpawn(const vec2& position)
 		std::mt19937 gen(12);
 		std::uniform_real_distribution x_dist(-m_initialSpeed, m_initialSpeed);
 		std::uniform_real_distribution y_dist(-2*m_initialSpeed, 0.0f);
+		
 
 		Factory::InitialMov mov = { vec2(x_dist(gen), y_dist(gen)), 0.0f };
 
-		m_spriteCreator->SpawnSprite("one", pos, mov);
+		if (std::rand() > RAND_MAX/2)
+		{
+			m_spriteCreator->SpawnSprite("two", pos, mov);
+		}
+		else
+		{
+			m_spriteCreator->SpawnSprite("one", pos, mov);
+		}
+
+		t_last = std::chrono::high_resolution_clock::now();
 	}
 
-	auto t_old = m_t_now;
-	m_t_now = std::chrono::high_resolution_clock::now();
-	m_elapsedTime = (m_t_now - t_old).count();
+	auto now = std::chrono::high_resolution_clock::now();
+	m_elapsedTime = std::chrono::duration_cast<std::chrono::duration<float>>(now - t_last).count();
 }

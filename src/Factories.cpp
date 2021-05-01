@@ -206,11 +206,13 @@ void Factory::setSpriteICs(eID entity, const InitialPos& pos, const InitialMov& 
 	RigidBodyState physicsState;
 	Transform2D transform;
 
+	float elapsed = 1 / 60.0f;
+
 	transform.pos = pos.pos;
 	transform.rotation = pos.rotation;
 
 	physicsState.centerPos = pos.pos;
-	physicsState.centerPos_o = pos.pos;
+	physicsState.centerPos_o = pos.pos - (movement.velocity * elapsed);
 	physicsState.rotation = pos.rotation;
 	physicsState.rotation_o = pos.rotation;
 
