@@ -61,6 +61,6 @@ namespace Factory
 
 	void makeSprite(eID entity, const std::array<vec2, 4>& quadVerts, const std::array<vec2, 4>& texCoords);
 
-	void setSpriteICs(eID entity, const InitialPos& pos, const InitialMov& movement);
+	void addSpritePhysicsICs(eID entity, const InitialPos& pos, const InitialMov& movement);
 
 }

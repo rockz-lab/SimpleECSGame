@@ -72,17 +72,17 @@ void TextureManager::LoadMetadata(const std::string filename)
 		float w = fileCoords["w"];
 		float h = fileCoords["h"];
 
-		coords[0].x = x / totalWidth;
-		coords[0].y = y / totalHeight;
+		coords[0].x() = x / totalWidth;
+		coords[0].y() = y / totalHeight;
 
-		coords[1].x = (x + w) / totalWidth;
-		coords[1].y = y / totalHeight;
+		coords[1].x() = (x + w) / totalWidth;
+		coords[1].y() = y / totalHeight;
 
-		coords[2].x = (x + w) / totalWidth;
-		coords[2].y = (y + h) / totalHeight;
+		coords[2].x() = (x + w) / totalWidth;
+		coords[2].y() = (y + h) / totalHeight;
 
-		coords[3].x = x / totalWidth;
-		coords[3].y = (y + h) / totalHeight;
+		coords[3].x() = x / totalWidth;
+		coords[3].y() = (y + h) / totalHeight;
 
 		
 		m_texMapping.insert({ spriteName, coords });

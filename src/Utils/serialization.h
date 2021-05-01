@@ -15,14 +15,14 @@ using json = nlohmann::json;
 #define FROM_FIELD(name) j.at(#name).get_to(obj.name)
 // vec2
 inline void to_json(json& j, const vec2& obj) {
-	FIELDS(
-		TO_FIELD(x),
-		TO_FIELD(y)
-	);
+	j = json{
+		{"x", obj.m_vec.x},
+		{"y", obj.m_vec.y}
+	};
 }
 inline void from_json(const json& j, vec2& obj) {
-	FROM_FIELD(x);
-	FROM_FIELD(y);
+	j.at("x").get_to(obj.m_vec.x);
+	j.at("y").get_to(obj.m_vec.y);
 }
 
 // Transform2D

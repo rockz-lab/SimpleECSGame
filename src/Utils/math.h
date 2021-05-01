@@ -24,19 +24,18 @@ struct vec2
 
 	vec2(const glm::vec2& vec) : m_vec(vec)
 	{
-		x = m_vec.x;
-		y = m_vec.y;
 	};
 
 	vec2(const vec2& vec)
 	{
 		this->m_vec = vec.m_vec;
-		x = m_vec.x;
-		y = m_vec.y;
 	};
 
-	float& x = m_vec.x;
-	float& y = m_vec.y;
+	float& x() { return m_vec.x; };
+	float& y() { return m_vec.y; };
+
+	const float& x() const { return m_vec.x; };
+	const float& y() const { return m_vec.y; };
 
 	friend std::ostream& operator<<(std::ostream& os, const vec2& vec)
 	{
@@ -121,8 +120,8 @@ struct vec2
 	{
 		 return vec2(glm::normalize(v.m_vec));
 	}
-private:
 	glm::vec2 m_vec{};
+private:
 };
 
 

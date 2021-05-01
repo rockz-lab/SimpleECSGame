@@ -87,8 +87,8 @@ void Renderer2D::Draw(FrameVertexBuffer& vertexBuffer, const glm::mat3& cameraPr
 		auto& transform = makeRotation(tForm.rotation);
 
 
-		transform[2][0] = tForm.pos.x;
-		transform[2][1] = tForm.pos.y;
+		transform[2][0] = tForm.pos.x();
+		transform[2][1] = tForm.pos.y();
 
 		m_shader->Bind();
 		

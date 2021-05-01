@@ -89,7 +89,7 @@ float MakePolys::GetAngularMoment(const Triangle& tri)
 	const auto& points = tri.vertexData.vertices;
 
 	vec2 baseDir = points[1] - points[0];
-	vec2 normal = normalize(vec2(baseDir.y, -baseDir.x));
+	vec2 normal = normalize(baseDir);
 
 	float base = glm::distance(points[1].to_glm(), points[0].to_glm());
 	float height = dot(normal, points[2] - points[1]);
@@ -106,7 +106,7 @@ float MakePolys::GetMass(const Triangle& tri, float density)
 	const auto& points = tri.vertexData.vertices;
 
 	vec2 baseDir = points[1] - points[0];
-	vec2 normal = normalize(vec2(baseDir.y, -baseDir.x));
+	vec2 normal = normalize(vec2(baseDir.y(), -baseDir.x()));
 
 	float base = distance(points[1].to_glm(), points[0].to_glm());
 	float height = dot(normal, points[2] - points[1]);
@@ -134,7 +134,7 @@ eID MakePolys::MakeTriangle(std::array<vec2, 3> const& points, vec2 centerPos)
 	for (auto const& lineIndices : indices)
 	{
 		vec2& lineDir = points[lineIndices.second] - points[lineIndices.first];
-		vec2 normal = normalize(glm::vec2{ -lineDir.y, lineDir.x });
+		vec2 normal = normalize(glm::vec2{ -lineDir.y(), lineDir.x() });
 		n[i] = normal;
 		i++;
 	}
@@ -201,7 +201,7 @@ void Factory::makeSprite(eID entity, const std::array<vec2, 4>& quadVerts, const
 	manager.AddComponent<TexCoords<4>>(entity, texCoordsComp);
 }
 
-void Factory::setSpriteICs(eID entity, const InitialPos& pos, const InitialMov& movement)
+void Factory::addSpritePhysicsICs(eID entity, const InitialPos& pos, const InitialMov& movement)
 {
 	RigidBodyState physicsState;
 	Transform2D transform;
@@ -212,7 +212,7 @@ void Factory::setSpriteICs(eID entity, const InitialPos& pos, const InitialMov& 
 	transform.rotation = pos.rotation;
 
 	physicsState.centerPos = pos.pos;
-	physicsState.centerPos_o = pos.pos - (movement.velocity * elapsed);
+	physicsState.centerPos_o = pos.pos; 
 	physicsState.rotation = pos.rotation;
 	physicsState.rotation_o = pos.rotation;
 
@@ -222,6 +222,9 @@ void Factory::setSpriteICs(eID entity, const InitialPos& pos, const InitialMov& 
 
 	physicsState.angMass = 1;
 	physicsState.mass = 1;
+	physicsState.momentum = (movement.velocity * (1/elapsed));
+	physicsState.momentum_o = physicsState.momentum;
+
 	physicsState.angMomentum = 0;
 	physicsState.angMomentum_o = 0;
 	

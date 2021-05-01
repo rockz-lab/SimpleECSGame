@@ -3,7 +3,7 @@
 void SpriteExampleSystem::Init(std::shared_ptr<Window> window, std::shared_ptr<TextureManager> texManager)
 {
 	m_spriteCreator = std::make_shared<SpriteCreator>(texManager);
-	m_source = std::make_unique<RandomSpriteSource>(m_spriteCreator, 2, 500);
+	m_source = std::make_unique<RandomSpriteSource>(m_spriteCreator, 2, 1);
 }
 
 void SpriteExampleSystem::Update(float dT)

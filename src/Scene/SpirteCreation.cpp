@@ -25,7 +25,7 @@ void SpriteCreator::SpawnSprite(const std::string& name, const Factory::InitialP
 	std::array<vec2, 4> verts = { vec2(-width/2, width/2), vec2(width/2, width/2), vec2(width/2, -width/2), vec2(-width/2, -width/2)};
 	Factory::makeSprite(entity, verts, coords);
 	
-	Factory::setSpriteICs(entity, pos, mov);
+	Factory::addSpritePhysicsICs(entity, pos, mov);
 
 	Gravity g;
 	manager.AddComponent(entity, g);
@@ -54,7 +54,7 @@ void RandomSpriteSource::TrySpawn(const vec2& position)
 
 		std::mt19937 gen(12);
 		std::uniform_real_distribution x_dist(-m_initialSpeed, m_initialSpeed);
-		std::uniform_real_distribution y_dist(-2*m_initialSpeed, 0.0f);
+		std::uniform_real_distribution y_dist(-m_initialSpeed, m_initialSpeed);
 		
 
 		Factory::InitialMov mov = { vec2(x_dist(gen), y_dist(gen)), 0.0f };
