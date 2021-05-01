@@ -36,12 +36,15 @@ void SpriteCreator::SpawnSprite(const std::string& name, const Factory::InitialP
 RandomSpriteSource::RandomSpriteSource(std::shared_ptr<SpriteCreator> spriteCreator)
 {
 	m_spriteCreator = spriteCreator;
+	gen = std::mt19937(rd());
 }
 
 RandomSpriteSource::RandomSpriteSource(std::shared_ptr<SpriteCreator> spriteCreator, float frequency, float initialSpeed) : RandomSpriteSource(spriteCreator)
 {
 	m_frequency = frequency;
 	m_initialSpeed = initialSpeed;
+	x_dist = std::uniform_real_distribution(-m_initialSpeed, m_initialSpeed);
+	y_dist = std::uniform_real_distribution(-m_initialSpeed, m_initialSpeed);
 }
 
 void RandomSpriteSource::TrySpawn(const vec2& position)
@@ -51,12 +54,7 @@ void RandomSpriteSource::TrySpawn(const vec2& position)
 	if (m_elapsedTime > 1 / m_frequency)
 	{
 		Factory::InitialPos pos = { position, 0.0f };
-
-		std::mt19937 gen(12);
-		std::uniform_real_distribution x_dist(-m_initialSpeed, m_initialSpeed);
-		std::uniform_real_distribution y_dist(-m_initialSpeed, m_initialSpeed);
 		
-
 		Factory::InitialMov mov = { vec2(x_dist(gen), y_dist(gen)), 0.0f };
 
 		if (std::rand() > RAND_MAX/2)

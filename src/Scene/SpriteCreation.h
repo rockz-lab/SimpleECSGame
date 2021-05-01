@@ -26,6 +26,12 @@ public:
 
 	void TrySpawn(const vec2& position);
 private:
+	std::random_device rd;
+	std::mt19937 gen;
+
+	std::uniform_real_distribution<float> x_dist;
+	std::uniform_real_distribution<float> y_dist;
+
 	std::shared_ptr<SpriteCreator> m_spriteCreator;
 	float m_frequency = 5;
 	float m_initialSpeed = 100;
