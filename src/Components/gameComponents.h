@@ -95,3 +95,8 @@ struct SpriteName : public Component<SpriteName>
 {
 	char name[STR_LEN];
 };
+
+struct LifeTimer : public Component<LifeTimer>
+{
+	float timeToDie;
+};

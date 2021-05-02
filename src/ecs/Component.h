@@ -178,11 +178,13 @@ public:
 		getCompArray<T>()->Remove(entity);
 	}
 
-    void OnEntityDestroyed(eID entity)
+    void OnEntityDestroyed(eID entity, Signature s)
     {
+		
         for (CompType cmp = 0; cmp < m_numCompArrays; cmp++)
         {
-			m_compArrays[cmp]->OnEntityDestroyed(entity);
+			if (s.test(cmp))
+				m_compArrays[cmp]->OnEntityDestroyed(entity);
         }
     }
 	
