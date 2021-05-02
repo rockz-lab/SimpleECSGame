@@ -14,7 +14,7 @@ SpriteCreator::SpriteCreator(std::shared_ptr<TextureManager> textureManager)
 	m_textureManager = textureManager;
 }
 
-void SpriteCreator::SpawnSprite(const std::string& name, const Factory::InitialPos& pos, const Factory::InitialMov& mov)
+eID SpriteCreator::SpawnSprite(const std::string& name, const Factory::InitialPos& pos, const Factory::InitialMov& mov)
 {
 	// control the size/aspect ratio of the sprite
 	eID entity = manager.CreateEntity();
@@ -30,7 +30,7 @@ void SpriteCreator::SpawnSprite(const std::string& name, const Factory::InitialP
 	Gravity g;
 	manager.AddComponent(entity, g);
 
-
+	return entity;
 }
 
 RandomSpriteSource::RandomSpriteSource(std::shared_ptr<SpriteCreator> spriteCreator)
@@ -39,13 +39,15 @@ RandomSpriteSource::RandomSpriteSource(std::shared_ptr<SpriteCreator> spriteCrea
 	gen = std::mt19937(rd());
 }
 
-RandomSpriteSource::RandomSpriteSource(std::shared_ptr<SpriteCreator> spriteCreator, float frequency, float initialSpeed) : RandomSpriteSource(spriteCreator)
-{
-	m_frequency = frequency;
-	m_initialSpeed = initialSpeed;
+RandomSpriteSource& RandomSpriteSource::Speed(float speed)
+{ 
+	this->m_initialSpeed = speed;
+
 	x_dist = std::uniform_real_distribution(-m_initialSpeed, m_initialSpeed);
 	y_dist = std::uniform_real_distribution(-m_initialSpeed, m_initialSpeed);
+	return *this; 
 }
+
 
 void RandomSpriteSource::TrySpawn(const vec2& position)
 {
@@ -57,14 +59,19 @@ void RandomSpriteSource::TrySpawn(const vec2& position)
 		
 		Factory::InitialMov mov = { vec2(x_dist(gen), y_dist(gen)), 0.0f };
 
+		eID entity;
 		if (std::rand() > RAND_MAX/2)
 		{
-			m_spriteCreator->SpawnSprite("two", pos, mov);
+			entity = m_spriteCreator->SpawnSprite("two", pos, mov);
 		}
 		else
 		{
-			m_spriteCreator->SpawnSprite("one", pos, mov);
+			entity = m_spriteCreator->SpawnSprite("one", pos, mov);
 		}
+
+		LifeTimer timer;
+		timer.timeToDie = m_lifeTime;
+		manager.AddComponent<LifeTimer>(entity, timer);
 
 		t_last = std::chrono::high_resolution_clock::now();
 	}

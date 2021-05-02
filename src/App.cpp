@@ -15,7 +15,7 @@ App::App()
 
     manager.Init();
     
-    manager.RegisterComponents<Gravity, Transform2D, RigidBodyState, Quad, TexCoords<4>>();
+    manager.RegisterComponents<Gravity, Transform2D, RigidBodyState, Quad, TexCoords<4>, LifeTimer>();
    
     physicssystem = manager.RegisterSystem<PhysicsSystem>();
     rendersystem = manager.RegisterSystem<RenderSystem>();
@@ -24,9 +24,14 @@ App::App()
 
     //applyforceSystem = manager.RegisterSystem<ApplyForces>();
 
-    manager.SetSystemSignature<RenderSystem, Gravity, Transform2D, RigidBodyState, Quad, TexCoords<4>>();
-    manager.SetSystemSignature<PhysicsSystem, Gravity, Transform2D, RigidBodyState, Quad, TexCoords<4>>();
-    manager.SetSystemSignature<SpriteExampleSystem, Gravity, Transform2D, RigidBodyState, Quad, TexCoords<4>>();
+    manager.SetSystemSignature<RenderSystem,
+        Gravity, Transform2D, RigidBodyState, Quad, TexCoords<4>>();
+
+    manager.SetSystemSignature<PhysicsSystem,
+        Gravity, Transform2D, RigidBodyState, Quad, TexCoords<4>>();
+
+    manager.SetSystemSignature<SpriteExampleSystem,
+        Gravity, Transform2D, RigidBodyState, Quad, TexCoords<4>, LifeTimer>();
 
     //manager.SetSystemSignature<CollisionSystem, Transform2D>();
     //manager.SetSystemSignature<ApplyForces, Transform2D, RigidBodyState, Triangle>();

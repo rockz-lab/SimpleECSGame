@@ -100,7 +100,8 @@ public:
     {
         m_entityManager->DestroyEntity(entity);
 
-        m_compManager->OnEntityDestroyed(entity);
+		auto s = m_entityManager->GetSignature(entity);
+		m_compManager->OnEntityDestroyed(entity, s);
         m_systemManager->OnEntityDestroyed(entity);
     }
 	// Component Methods
