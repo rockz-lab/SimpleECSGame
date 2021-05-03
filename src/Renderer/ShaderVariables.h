@@ -11,7 +11,7 @@ static const int bufferSize = 15;
 
 struct ShaderVariable
 {
-	ShaderVariable() = default;
+	//ShaderVariable() = default;
 	std::string name = "";
 	GLsizei length;
 	GLenum type;
@@ -48,9 +48,9 @@ public:
 	template <typename T>
 	void Set(T scalar)
 	{
-		if (_DEBUG)
+#ifdef _DEBUG
 			Validate();
-
+#endif
 		if constexpr (std::is_same<T, float>())
 			glUniform1f(location, scalar);
 		else if constexpr (std::is_same<T, double>())
@@ -74,9 +74,9 @@ public:
 	template <typename T>
 	void Set(const T* data, int length)
 	{
-		if (_DEBUG)
+#ifdef _DEBUG
 			if (!Validate()) return;
-		
+#endif	
 		assert(this->size == length);
 
 		if constexpr (std::is_same<T, float>())
@@ -113,8 +113,9 @@ public:
 	template <typename T>
 	void Set(const T& data)
 	{
-		if (_DEBUG)
+#ifdef _DEBUG
 			Validate();
+#endif _DEBUG
 
 		if constexpr (std::is_same<T, glm::mat2>())
 			glUniformMatrix2fv(location, 1, false, glm::value_ptr(data));

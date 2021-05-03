@@ -51,12 +51,15 @@ Window::Window(int width, int height, const std::string& title)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	if (_DEBUG)
+#ifdef DEBUG
 	{
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback(MessageCallback, 0);
 	}
+
+#endif // DEBUG
+
 
 }
 

@@ -88,7 +88,7 @@ public:
 						{
 							// detect change of collision state:
 							if ((manager.GetComponent<CollisionState>(e_target).status == false) ||
-								(manager.GetComponent<CollisionState>(e_source).status = false) )
+								(manager.GetComponent<CollisionState>(e_source).status == false) )
 							{
 								color_t.r = 200;
 								color_s.r = 200;

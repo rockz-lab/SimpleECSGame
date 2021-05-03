@@ -4,7 +4,7 @@ void SpriteExampleSystem::Init(std::shared_ptr<Window> window, std::shared_ptr<T
 {
 	m_spriteCreator = std::make_shared<SpriteCreator>(texManager);
 	m_source = std::make_unique<RandomSpriteSource>(m_spriteCreator);
-	m_source->Frequency(100).Speed(2).LifeTime(1);
+	m_source->Frequency(60).Speed(4).LifeTime(1000);
 }
 
 void SpriteExampleSystem::Update(float dT)
