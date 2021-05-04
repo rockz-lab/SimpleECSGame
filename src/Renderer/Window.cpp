@@ -59,8 +59,6 @@ Window::Window(int width, int height, const std::string& title)
 	}
 
 #endif // DEBUG
-
-
 }
 
 

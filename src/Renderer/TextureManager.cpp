@@ -58,7 +58,6 @@ void TextureManager::LoadMetadata(const std::string filename)
 
 	for (auto& sprite : metadata["frames"].items())
 	{
-		//std::cout << sprite.key() << std::endl;
 
 		std::string spriteName = sprite.key();
 		stripFileEnding(spriteName);

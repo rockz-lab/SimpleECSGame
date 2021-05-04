@@ -39,12 +39,10 @@ public:
 	const std::vector<IndexedDrawInfo>& GetDrawInfo() const { return m_drawinfo; }
 
 	void AddDrawable(eID entity);
-private:
 
-	//void IndexedDraw()
+private:
 	std::unique_ptr<VertexArrayRing<Vertex2D>> m_VertexArray;
 
-	
 	std::vector<IndexedDrawInfo> m_drawinfo;
 
 	std::tuple<std::vector<Vertex2D>, std::vector<unsigned int>> MakeQuadVerts(eID entity);

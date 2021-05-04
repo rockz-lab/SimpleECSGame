@@ -38,16 +38,7 @@ public:
 		renderer->Draw(vertexBuffer, cam->transform);
 
 		vertexBuffer.Unbind();
-		/*for (auto& entity : m_entitiyLists[1])
-		{
-			auto& line = manager.GetComponent<Line>(entity);
-
-			sf::VertexArray vertArr(sf::Lines, 2);
-			vertArr[0].position = { line.p1.x, line.p1.y };
-			vertArr[1].position = { line.p2.x, line.p2.y };
-
-			win->draw(vertArr);
-		}*/
+		
 	}
 	
 private:
