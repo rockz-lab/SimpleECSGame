@@ -1,7 +1,7 @@
 #pragma once
 #include <random>
 
-#include "ecs/ecs.h"
+#include "ECS/ECS.h"
 
 #include "Utils/math.h"
 #include "Components/gameComponents.h"
@@ -18,13 +18,13 @@ public:
 
 	eID MakeRandomCircle();
 	glm::vec<3, uint8_t> defaultColor;
-	float g = 9.81;
+	float g = 9.81f;
 private:
 	ECSManager* m_manager;
 
 	std::shared_ptr<std::mt19937> m_rng;
 	
-	std::unique_ptr<std::uniform_int_distribution<>> randColor;
+	std::unique_ptr<std::uniform_int_distribution<int>> randColor;
 	std::unique_ptr<std::uniform_real_distribution<float>> initPos;
 	std::unique_ptr<std::normal_distribution<float>> initVel;
 	std::unique_ptr<std::uniform_real_distribution<float>> circleRadius;

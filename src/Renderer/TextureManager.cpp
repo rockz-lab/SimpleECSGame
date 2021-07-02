@@ -18,14 +18,11 @@ TextureManager::TextureManager(const std::string& atlasPath, const std::string& 
 	LoadMetadata(metadatapath);
 }
 
-std::array<vec2, 4>& TextureManager::GetTexCoords(const std::string& spriteName)
+const std::array<vec2, 4>& TextureManager::GetTexCoords(const std::string& spriteName)
 {
-	assert(m_texMapping.find(spriteName) != m_texMapping.end());
+	//assert(m_texMapping.finsd(spriteName) != m_texMapping.end());
 
-	if (m_texMapping.find(spriteName) == m_texMapping.end())
-		return std::array<vec2, 4>();
-
-	return m_texMapping[spriteName];
+	return m_texMapping.at(spriteName);
 }
 
 void TextureManager::CreateGLTexture()

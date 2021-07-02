@@ -22,6 +22,8 @@
 // keep track of Element buffer offsets
 
 
+extern ECSManager manager;
+
 // TODO: expose the size
 FrameVertexBuffer::FrameVertexBuffer()
 {
@@ -100,7 +102,7 @@ void Renderer2D::Draw(FrameVertexBuffer& vertexBuffer, const glm::mat3& cameraPr
 
 		const auto& range = drawInfo.indexRange;
 
-		glDrawElements(GL_TRIANGLES, range.size, GL_UNSIGNED_INT, (GLvoid*)(range.offset * sizeof(unsigned int)));
+		glDrawElements(GL_TRIANGLES, (GLsizei)range.size, GL_UNSIGNED_INT, (GLvoid*)(range.offset * sizeof(unsigned int)));
 	}
 
 	vertexBuffer.Unbind();

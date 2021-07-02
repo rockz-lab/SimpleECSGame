@@ -1,22 +1,22 @@
 #include "Factories.h"
 
-#include "ECS/ecs.h"
+extern ECSManager manager;
 
 MakeCircles::MakeCircles(ECSManager* manager)
 {
 
 	m_manager = manager;
 
-	using uniform_int = std::uniform_int_distribution<>;
+	using uniform_int = std::uniform_int_distribution<int>;
 	using uniform_real = std::uniform_real_distribution<float>;
 
 	// Random generation
 	std::random_device r;
 	m_rng = std::make_shared<std::mt19937>(r());
 	randColor = std::make_unique<uniform_int>(0, 255);
-	initPos = std::make_unique<uniform_real>(-250, 250);
-	initVel = std::make_unique<std::normal_distribution<float>>(0, 100);
-	circleRadius = std::make_unique<uniform_real>(3, 30);
+	initPos = std::make_unique<uniform_real>(-250.0f, 250.0f);
+	initVel = std::make_unique<std::normal_distribution<float>>(0.0f, 100.0f);
+	circleRadius = std::make_unique<uniform_real>(3.0f, 30.0f);
 }
 
 eID MakeCircles::MakeCircle(float radius, glm::vec<3, uint8_t> color, vec2 startPos)
@@ -61,9 +61,9 @@ eID MakeCircles::MakeRandomCircle()
 
 	// Color
 	Color col;
-	col.r = (*randColor)(*m_rng);
-	col.g = (*randColor)(*m_rng);
-	col.b = (*randColor)(*m_rng);
+	col.r = (uint8_t)(*randColor)(*m_rng);
+	col.g = (uint8_t)(*randColor)(*m_rng);
+	col.b = (uint8_t)(*randColor)(*m_rng);
 	m_manager->AddComponent(entity, col);
 
 	// Movement State
@@ -133,7 +133,7 @@ eID MakePolys::MakeTriangle(std::array<vec2, 3> const& points, vec2 centerPos)
 	int i = 0;
 	for (auto const& lineIndices : indices)
 	{
-		vec2& lineDir = points[lineIndices.second] - points[lineIndices.first];
+		vec2 lineDir = points[lineIndices.second] - points[lineIndices.first];
 		vec2 normal = normalize(glm::vec2{ -lineDir.y(), lineDir.x() });
 		n[i] = normal;
 		i++;
@@ -177,7 +177,6 @@ eID MakePolys::MakeTriangle(std::array<vec2, 3> const& points, vec2 centerPos)
 	return entity;
 }
 
-extern ECSManager manager;
 
 void Factory::makeSprite(eID entity, const std::array<vec2, 4>& quadVerts, const std::array<vec2, 4>& texCoords)
 {

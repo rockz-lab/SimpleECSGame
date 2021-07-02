@@ -30,7 +30,7 @@ void ShaderBase::GetAttribsFromProgram()
 {
 	glGetProgramiv(m_program, GL_ACTIVE_ATTRIBUTES, &m_AttrCount);
 
-	for (GLuint i = 0; i < m_AttrCount; i++)
+	for (GLint i = 0; i < m_AttrCount; i++)
 	{
 		char name[bufferSize];
 		GLsizei length;
@@ -48,7 +48,7 @@ void ShaderBase::GetUniformsFromProgram()
 {
 	glGetProgramiv(m_program, GL_ACTIVE_UNIFORMS, &m_UniformsCount);
 
-	for (GLuint i = 0; i < m_UniformsCount; i++)
+	for (GLint i = 0; i < m_UniformsCount; i++)
 	{
 		char name[bufferSize];
 		GLsizei length;
@@ -76,7 +76,7 @@ GLuint createShader(const std::string& text, GLenum shaderType)
 	GLint shaderSourceStringLengths[1];
 
 	shaderSourceStrings[0] = text.c_str();              // Source Code conversion to c String
-	shaderSourceStringLengths[0] = text.length();
+	shaderSourceStringLengths[0] = static_cast<GLsizei>(text.length());
 
 	glShaderSource(shader, 1, shaderSourceStrings, shaderSourceStringLengths);
 	glCompileShader(shader);

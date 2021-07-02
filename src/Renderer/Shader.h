@@ -30,9 +30,9 @@ protected:
 	};
 
 	
-	GLuint m_program;
-	GLint m_AttrCount;
-	GLint m_UniformsCount;
+	GLuint m_program{};
+	GLint m_AttrCount{};
+	GLint m_UniformsCount{};
 
 	std::vector<ShaderVariable> m_attribs;
 	std::vector<ShaderVariable> m_uniforms;

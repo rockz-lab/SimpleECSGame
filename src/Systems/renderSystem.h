@@ -10,7 +10,6 @@
 
 #include "Scene/Camera.h"
 
-extern ECSManager manager;
 // 2D rendering with SFML
 class RenderSystem : public System
 {
@@ -20,11 +19,10 @@ public:
 		win = window;
 		
 		renderer = std::make_unique<Renderer2D>();
-		cam = std::make_unique<Camera2D>(1000, 1);
+		cam = std::make_unique<Camera2D>(1000.0f, 1.0f);
 	}
 
-	template <typename T>
-	void Update(T dT)
+	void Update()
 	{
 
 		FrameVertexBuffer vertexBuffer;

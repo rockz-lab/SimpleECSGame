@@ -2,19 +2,23 @@
 
 #include <cassert>
 
-void GLAPIENTRY
-MessageCallback(GLenum source,
-	GLenum type,
-	GLuint id,
-	GLenum severity,
-	GLsizei length,
-	const GLchar* message,
-	const void* userParam)
-{
-	fprintf(stdout, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-		type, severity, message);
-}
+//void GLAPIENTRY
+//MessageCallback(GLenum source,
+//	GLenum type,
+//	GLuint id,
+//	GLenum severity,
+//	GLsizei length,
+//	const GLchar* message,
+//	const void* userParam)
+//{
+//	fprintf(stdout, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+//		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+//		type, severity, message);
+//}
+
+
+
+
 
 Window::Window(int width, int height, const std::string& title)
 {
@@ -37,7 +41,7 @@ Window::Window(int width, int height, const std::string& title)
 	
 	m_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
-	assert(m_window != nullptr, "window creation failed!");
+	assert(m_window != nullptr && "window creation failed!");
 	glfwMakeContextCurrent(m_window);
 
 	GLint GlewInitResult = glewInit();
@@ -47,15 +51,17 @@ Window::Window(int width, int height, const std::string& title)
 		glfwTerminate();
 			exit(EXIT_FAILURE);
 	}
-	glfwSwapInterval(1);
+	//glfwSwapInterval(1);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+
+	glfwSetWindowUserPointer(m_window, reinterpret_cast<void*>(this));
 #ifdef DEBUG
 	{
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glEnable(GL_DEBUG_OUTPUT);
-		glDebugMessageCallback(MessageCallback, 0);
+		//glDebugMessageCallback(MessageCallback, 0);
 	}
 
 #endif // DEBUG
@@ -64,8 +70,13 @@ Window::Window(int width, int height, const std::string& title)
 
 void Window::Update()
 {
-	glfwSwapBuffers(m_window);
+	Draw();
 	glfwPollEvents();
+}
+
+void Window::Draw()
+{
+	glfwSwapBuffers(m_window);
 }
 
 void Window::Clear()
@@ -83,4 +94,17 @@ Window::operator bool()
 	}
 	else
 		return false;
+}
+
+void Window::EventLoopThread()
+{
+	while (true)
+	{
+		glfwPollEvents();
+	}
+}
+
+void Window::SetWindowPosCallback(GLFWwindowposfun function)
+{
+	glfwSetWindowPosCallback(m_window, function);
 }

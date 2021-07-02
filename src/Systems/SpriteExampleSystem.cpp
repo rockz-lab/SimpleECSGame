@@ -1,5 +1,7 @@
 #include "SpriteExampleSystem.h"
 
+extern ECSManager manager;
+
 void SpriteExampleSystem::Init(std::shared_ptr<Window> window, std::shared_ptr<TextureManager> texManager)
 {
 	m_spriteCreator = std::make_shared<SpriteCreator>(texManager);

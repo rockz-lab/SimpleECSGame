@@ -5,16 +5,7 @@
 #include <iostream>
 #include <cassert>
 
-//using namespace glm;
-
-//namespace glm
-//{
-//	vec2& dot(vec2 a, vec2 b)
-//	{
-//		return glm::dot(a, b);
-//	}
-//}
-
+extern ECSManager manager;
 
 bool timeOfImpact_circle_circle(float& t, vec2 const& p1, vec2 const& p2, vec2 const& v1, vec2 const& v2, float r1, float r2)
 {
@@ -43,7 +34,7 @@ bool timeOfImpact_circle_line(float& t, vec2& p1, vec2& p2, vec2& l1, vec2& l2, 
 	float t2 = (r - dot(-n, p1)) / dot(-n, (p2 - p1));
 	float t_out = std::min(t1, t2);
 	printf("Time of impact: %f\n", t_out);
-	printf("p2 -p1: %f\n", normalize(p2 - p1));
+	//printf("p2 -p1: %f\n", normalize(p2 - p1).x);
 	printf("p2: %f, %f\n", p1.x(), p1.y());
 	printf("p2: %f, %f\n", p2.x(), p2.y());
 	if (t_out > 0)
@@ -182,3 +173,38 @@ bool timeOfImpact_circle_line(float& t, vec2& p1, vec2& p2, vec2& l1, vec2& l2, 
 //		target_mov.vel += dT_remaining * glm::vec2(0.0f, g);
 //	}
 //}
+
+void PhysicsSystem::Update(const float dT)
+{
+	// needed: Mechanism to select the right list of entities
+
+
+	for (auto const& entity : m_entitiyLists[0])
+	{
+		auto& transform = manager.GetComponent<Transform2D>(entity);
+		auto& grav = manager.GetComponent<Gravity>(entity);
+		auto& state = manager.GetComponent<RigidBodyState>(entity);
+
+		// apply Gravity and other constant forces/torques
+		state.force += glm::vec2(0, -grav.g * state.mass);
+
+		state.centerPos_o = state.centerPos;
+		state.angMomentum_o = state.angMomentum;
+		state.momentum_o = state.momentum;
+		state.rotation_o = state.rotation;
+		state.centerPos_o = state.centerPos;
+
+		//state.accel = grav.g;
+		state.momentum += state.force * dT;
+		state.angMomentum += state.torque * dT;
+		state.centerPos += state.momentum / state.mass * dT;
+		state.rotation += state.angMomentum / state.angMass * dT;
+
+		transform.pos += state.momentum / state.mass * dT;
+		transform.rotation = state.rotation;
+
+		// reset force and torque
+		state.force = {};
+		state.torque = {};
+	}
+}

@@ -30,7 +30,7 @@ int main()
 
 	{
 		Gravity gravity;
-		gravity.g = 9.81;
+		gravity.g = 9.81f;
 		Circle circle;
 		circle.radius = 20;
 		Circle smallCircle;

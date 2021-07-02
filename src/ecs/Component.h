@@ -161,10 +161,10 @@ public:
 		return getCompArray<T>()->GetCompData(entity);
 	}
 
-	void GetComponent(eID entity, CompType compID)
+	/*void GetComponent(eID entity, CompType compID)
 	{
 		typeid(m_compArrays[compID]);
-	}
+	}*/
 	
 	template <typename T>
 	void AddComponent(eID entity, T component)

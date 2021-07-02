@@ -2,7 +2,6 @@
 
 #include <random>
 
-
 extern ECSManager manager;
 
 SpriteCreator::SpriteCreator(std::shared_ptr<TextureManager> textureManager)

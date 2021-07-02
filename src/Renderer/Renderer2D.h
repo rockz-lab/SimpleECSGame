@@ -1,13 +1,12 @@
 #pragma once
 
 #include "VertexArray.h"
-#include "ECS/ecs.h"
+#include "ECS/ECS.h"
 
 #include "SpriteShader.h"
 
 #include <memory>
 
-extern ECSManager manager;
 
 class FrameVertexBuffer;
 

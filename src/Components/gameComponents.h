@@ -31,17 +31,17 @@ struct Circle : public Component<Circle>
 
 struct RigidBodyState : public Component<RigidBodyState>
 {
-	float mass;
-	float angMass;
+	float mass{};
+	float angMass{};
 	vec2 centerPos{};
 	vec2 momentum{};
 	float rotation{};
 	float angMomentum{};
 
-	vec2 centerPos_o;
-	vec2 momentum_o;
-	float rotation_o;
-	float angMomentum_o;
+	vec2 centerPos_o{};
+	vec2 momentum_o{};
+	float rotation_o{};
+	float angMomentum_o{};
 
 	vec2 force = {};
 	float torque = 0;

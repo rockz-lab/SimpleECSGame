@@ -9,8 +9,8 @@
 // TODO: Add flags to control STATIC/DYNAMIC DRAW
 struct ElementBufferRange
 {
-	unsigned int offset;
-	unsigned int size;
+	GLsizei offset;
+	GLsizei size;
 };
 
 template <typename type>
@@ -118,12 +118,12 @@ public:
 
 protected:
 
-	void WriteRangeVerts(int start, int count, const type* data)
+	void WriteRangeVerts(int start, size_t count, const type* data)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferSubData(GL_ARRAY_BUFFER, start * sizeof(type), count * sizeof(type), data);
 	}
-	void WriteRangeElts(int start, int count, const unsigned int* data)
+	void WriteRangeElts(int start, size_t count, const unsigned int* data)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, start * sizeof(unsigned int), count * sizeof(unsigned int), data);
@@ -151,8 +151,8 @@ public:
 	{
 		assert(indices.size() % 3 == 0 && "Number of indcies must be divisible by 3, because triangle elements are used");
 
-		GLsizei newVertexCount = m_sizeVerts + verts.size();
-		GLsizei newElementCount = m_sizeElts + indices.size();
+		GLsizei newVertexCount = m_sizeVerts + static_cast<GLsizei>(verts.size());
+		GLsizei newElementCount = m_sizeElts + static_cast<GLsizei>(indices.size());
 
 		bool isVertexArrayFull = newVertexCount > m_capacityVerts;
 		bool isElementArrayFull = newElementCount > m_capacityElts;
@@ -162,8 +162,8 @@ public:
 			m_sizeVerts = 0;
 			m_sizeElts = 0;
 
-			newVertexCount = verts.size();
-			newElementCount = indices.size();
+			newVertexCount = static_cast<GLsizei>(verts.size());
+			newElementCount = static_cast<GLsizei>(indices.size());
 		}
 
 		for (auto& ind : indices)
@@ -179,7 +179,7 @@ public:
 		//glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, m_sizeElts * sizeof(unsigned int), indices.size() * sizeof(unsigned int), indices.data());
 		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		ElementBufferRange EBRange{ m_sizeElts, indices.size() };
+		ElementBufferRange EBRange{ m_sizeElts, (GLsizei)indices.size() };
 		m_sizeElts = newElementCount;
 		m_sizeVerts = newVertexCount;
 		return EBRange;

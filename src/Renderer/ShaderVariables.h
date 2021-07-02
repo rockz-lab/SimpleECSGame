@@ -72,7 +72,7 @@ public:
 	}
 
 	template <typename T>
-	void Set(const T* data, int length)
+	void Set(const T* data, size_t length)
 	{
 #ifdef _DEBUG
 			if (!Validate()) return;

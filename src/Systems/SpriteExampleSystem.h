@@ -3,14 +3,13 @@
 #include "ecs/ecs.h"
 #include "Components/gameComponents.h"
 
-extern ECSManager manager;
 
 #include "Renderer/Window.h"
 #include "Scene/SpriteCreation.h"
 
-#include "Systems/SpriteExampleSystem.h"
-
 #include <glm/gtx/rotate_vector.hpp>
+
+extern ECSManager manager;
 
 class SpriteExampleSystem : public System
 {

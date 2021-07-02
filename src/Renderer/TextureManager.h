@@ -15,8 +15,7 @@ class TextureManager
 public:
 	TextureManager(const std::string& atlasPath, const std::string& metadatapath);
 	
-	std::array<vec2, 4>& GetTexCoords(const std::string& spriteName);
-	// also what is the 
+	const std::array<vec2, 4>& GetTexCoords(const std::string& spriteName);
 private:
 	void CreateGLTexture();
 	void LoadAtlas(const std::string filename);
