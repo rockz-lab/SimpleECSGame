@@ -9,7 +9,7 @@
 // initialize the counter
 CompType BaseComponent::m_counter = 0;
 
-extern ECSManager manager;
+ECSManager manager;
 
 int main()
 {

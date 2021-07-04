@@ -27,7 +27,6 @@ find_package(ZLIB REQUIRED)
 
 file( GLOB_RECURSE app_source
 							# ORDER MATTERS!!!
-							${PROJECT_SOURCE_DIR}/src/ECS/ECS.cpp
 							${PROJECT_SOURCE_DIR}/src/main.cpp
 							${PROJECT_SOURCE_DIR}/src/App.cpp
 							${PROJECT_SOURCE_DIR}/src/Factories.cpp
@@ -44,11 +43,10 @@ list(APPEND all_source ${ext_source})
 add_executable(game ${all_source})
 
 add_executable(tests ${PROJECT_SOURCE_DIR}/src/Tests/test_serialization.cpp
- ${PROJECT_SOURCE_DIR}/src/ECS/ECS.cpp
  )
 
 if (MSVC)
-	set_source_files_properties(${app_source} PROPERTIES COMPILE_FLAGS /W)
+	set_source_files_properties(${app_source} PROPERTIES COMPILE_FLAGS /WAll)
 	set_source_files_properties(${app_source} PROPERTIES COMPILE_FLAGS /WX)
 else()
 	target_compile_options(-Wall -Wextra -pedantic -Werror)
