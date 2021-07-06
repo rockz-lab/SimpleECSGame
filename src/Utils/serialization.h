@@ -4,8 +4,6 @@
 
 #include <array>
 
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
 
 #include "Components/gameComponents.h"
 

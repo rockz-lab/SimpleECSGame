@@ -5,6 +5,7 @@
 #include <cassert>
 #include <memory>
 #include <typeinfo>
+#include <array>
 
 // Components derive from this class
 

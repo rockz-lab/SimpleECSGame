@@ -2,7 +2,10 @@
 
 #include <fstream>
 
-#include "TestComponents.h"
+#include "Components/gameComponents.h"
+
+
+#include "Utils/serialization.h"
 
 #include "ECS/ECS.h"
 #include "utils/math.h"
@@ -23,7 +26,7 @@ int main()
 	//std::ostream& os = std::cout;
 
 	Transform2D tform;
-	tform.pos = Vec2{ 1.0f, 2.0f };
+	tform.pos = vec2(1.0f, 2.0f );
 
 	manager.Init();
 	eID entityOne = manager.CreateEntity();
@@ -40,13 +43,15 @@ int main()
 		Circle bigCircle;
 		bigCircle.radius = 60;
 
+		RigidBodyState state;
 
 
-		manager.RegisterComponents<Gravity, Circle, Transform2D>();
+		manager.RegisterComponents<Gravity, Circle, Transform2D, RigidBodyState>();
 
 		manager.AddComponent(entityOne, gravity);
 		manager.AddComponent(entityOne, smallCircle);
 		manager.AddComponent(entityOne, tform);
+		manager.AddComponent(entityOne, state);
 
 		manager.AddComponent(entityTwo, bigCircle);
 		manager.AddComponent(entityTwo, tform);
@@ -57,7 +62,7 @@ int main()
 
 	}
 
-	manager.Serialize<Gravity, Circle, Transform2D>("test.json");
+	manager.Serialize<Gravity, Circle, Transform2D, RigidBodyState>("test.json");
 
 	manager.DestroyEntity(entityOne);
 	manager.DestroyEntity(entityThree);
@@ -77,7 +82,7 @@ int main()
 	//manager.AddComponent(newOtherTest, tform);
 
 
-	manager.Deserialize<Gravity, Circle, Transform2D>("test.json");
+	manager.Deserialize<Gravity, Circle, Transform2D, RigidBodyState>("test.json");
 	
 	
 	auto& circleHandle = manager.GetComponent<Circle>(1);
@@ -88,8 +93,40 @@ int main()
 
 	auto& handle = manager.GetComponent<Transform2D>(1);
 	std::cout << "pos:\n";
-	std::cout << handle.pos.x << "\n";
+	std::cout << handle.pos * 2 << "\n";
+
+	auto& handle2 = manager.GetComponent<RigidBodyState>(0);
+	std::cout << "centerPos_o:\n";
+	std::cout << handle2.centerPos_o << "\n";
+
+	//std::ofstream fs;
+	////fs.exceptions(std::ostream::badbit || std::ostream::failbit);
+
+	//try
+	//{
+	//	fs.open("test.csv", std::ifstream::trunc);
+	//}
+	//catch (std::fstream::failure e)
+	//{
+	//	std::cerr << e.what();
+	//}
+
+	///*tform.serialize(fs);
+	//circle.serialize(fs);
+	//gravity.serialize(fs);*/
 
 	
+	std::ifstream inFile;
+
+	//inFile.open("test.txt");
+
+	//std::string discard;
+	//std::getline(inFile, discard);
+	//std::getline(inFile, discard);
+
+	//auto result = getProperty(inFile, "pos");
+	//
+	//std::cout << result[0] << std::endl;
+	//std::cout << result[1] << std::endl;
 
 }

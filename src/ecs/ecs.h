@@ -10,7 +10,9 @@
 //#include "nlohmann/json.hpp"
 //using json = nlohmann::json;
 
-#include "Utils/Serialization.h"
+//#include "Utils/Serialization.h"
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 class ECSManager
 {

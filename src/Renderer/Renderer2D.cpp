@@ -2,6 +2,8 @@
 
 #include "Utils/math.h"
 
+#include "Components/gameComponents.h"
+
 // Idea: Assemble the vertex array each frame and then draw...
 // drawables:
 // texture Atlas ID
